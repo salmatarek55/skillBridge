@@ -119,9 +119,15 @@ export default function Navbar() {
           )}
 
           {user && isAdmin(user) && (
+           <>
             <Link className={linkClass("/admin/dashboard")} to="/admin/dashboard">
-              Admin
+              Dashboard
             </Link>
+            <Link className={linkClass("/admin/all-users")} to="/admin/all-users">
+              Allusers
+            </Link>
+           
+           </>
           )}
         </nav>
 

@@ -12,7 +12,6 @@ import { Toaster } from "react-hot-toast";
 import Messages from "./pages/Messages/Messages";
 import MyRequests from  "./pages/client/MyRequests"
 import MyServices from "./pages/provider/MyServices";
-import Dashboard from "./pages/provider/Dashboard";
 import ProviderOrders from "./pages/provider/ProviderOrders";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProviderRoute from './Routes/ProviderRoute';
@@ -21,7 +20,11 @@ import ProtectedRoutes from "./Routes/ProtectedRoutes";
 import Profile from './pages/Profile/Profile';
 import PendingProviders from "./pages/admin/PendingProviders";
 import PendingServices from './pages/admin/PendingServices';
-
+import IncomingRequests from './pages/provider/IncomingRequests';
+import AccountPending from './pages/provider/AccountPending';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Dashboard from "./pages/provider/Dashboard";
+import AllUsers from './pages/admin/AllUsers';
 
 
 const routes = createBrowserRouter([
@@ -34,7 +37,7 @@ const routes = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
       { path: "/services", element: <Services /> },
-      { path: "/services/:id", element: <ServiceDetails /> },
+      { path: "/services/:serviceId", element: <ServiceDetails /> },
       
       // protected routes
       {element:<ProtectedRoutes />,children:[
@@ -46,9 +49,12 @@ const routes = createBrowserRouter([
       {
         element: <ProviderRoute />,
         children: [
-          { path: "/dashboard", element: <Dashboard /> },
           { path: "/my-services", element: <MyServices /> },
           { path: "/orders", element: <ProviderOrders  /> },
+          { path: "/incoming-requests", element: <IncomingRequests /> },
+          { path: "/account-pending", element : <AccountPending /> },
+          { path: "/dashboard", element : <Dashboard /> },
+
         ],
       },
       // admin routes
@@ -58,6 +64,7 @@ const routes = createBrowserRouter([
           { path: "/admin/dashboard", element: <AdminDashboard /> },
            { path: "/admin/pending-providers", element: <PendingProviders /> },
             { path: "/admin/pending-services", element: <PendingServices /> },
+            { path: "/admin/all-users", element: <AllUsers /> },
             
         ],
       },
@@ -67,12 +74,16 @@ const routes = createBrowserRouter([
 ]);
 
 export default function App() {
+  const queryClient =new  QueryClient();
   return (
     <>
-      <AuthContextProvider>
+    <QueryClientProvider client={ queryClient}>
+             <AuthContextProvider>
         <RouterProvider router={routes}></RouterProvider>
         <Toaster position="top-right" />
       </AuthContextProvider>
+    </QueryClientProvider>
+
     </>
   );
 }

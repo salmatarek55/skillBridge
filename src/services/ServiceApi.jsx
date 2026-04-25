@@ -1,11 +1,26 @@
 import {services} from "../data/services";
 
+const normalizeService = (s) => ({
+   serviceId: s.serviceId,
+  title: s.title,
+  description: s.description,
+  category: s.category,
+  price: s.price,
+  rating: s.rating,
+  deliveryTime: s.deliveryTime,
+  provider: s.provider,
+  images: s.images,
+  status: s.status,
+  createdAt: s.createdAt,
+  updatedAt: s.updatedAt,
+});
+
+
 // getAllServices
-export function getAllServices(){
-  
+export function getAllServices(){ 
     return new Promise( (resolve) =>{
         setTimeout(() => {
-      resolve(services);
+      resolve(services.map(normalizeService));
     }, 500);
     })
 }
@@ -15,7 +30,7 @@ export function getAllServices(){
 export function getServiceById(id){
     return new Promise((resolve) => {
     const service = services.find((s) => s.serviceId === id);
-    setTimeout(() => resolve(service), 300);
+    setTimeout(() => resolve(service ? normalizeService(service) : null), 300);
   });
 }
 
@@ -38,7 +53,9 @@ export function filterServices({category , price, rating}){
       result = result.filter((s) => s.rating >= rating);
     }
 
-    setTimeout(() => resolve(result), 300);
+    setTimeout(() => {
+      resolve(result.map(normalizeService));
+    }, 300);
   });
 }
 
@@ -50,6 +67,8 @@ export function searchServices(query){
       s.title.toLowerCase().includes(query.toLowerCase())
     );
 
-    setTimeout(() => resolve(result), 300);
+    setTimeout(() => {
+      resolve(result.map(normalizeService));
+    }, 300);
   });
 }

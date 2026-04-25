@@ -13,6 +13,8 @@ export const services = [
       "https://picsum.photos/seed/design2/400/300",
     ],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s2",
@@ -28,6 +30,8 @@ export const services = [
       "https://picsum.photos/seed/dev2/400/300",
     ],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s3",
@@ -40,6 +44,8 @@ export const services = [
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/logo1/400/300"],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s4",
@@ -52,6 +58,8 @@ export const services = [
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/writing1/400/300"],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s5",
@@ -64,6 +72,8 @@ export const services = [
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/api1/400/300"],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s6",
@@ -76,6 +86,8 @@ export const services = [
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/social1/400/300"],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s7",
@@ -88,6 +100,8 @@ export const services = [
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/video1/400/300"],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
   {
     serviceId: "s8",
@@ -100,6 +114,8 @@ export const services = [
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/wp1/400/300"],
     status: "approved",
+    createdAt: null,
+updatedAt: null
   },
 ];
 

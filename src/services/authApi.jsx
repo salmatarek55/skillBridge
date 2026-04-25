@@ -13,10 +13,7 @@ export function loginUser(email, password) {
         return;
       }
        
-         if (user.role === "provider" && !user.approved) {
-        reject({ message: "Account pending admin approval" });
-        return;
-      }
+    
 
       resolve({
         ...user,

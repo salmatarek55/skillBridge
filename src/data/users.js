@@ -3,27 +3,33 @@ export const users = [
     id: "u1",
     name: "Sara Ahmed",
     email: "client@test.com",
-    password: "client123",
+    password: "Client123",
     role: "client",
     approved: true,
     avatar: "https://i.pravatar.cc/150?img=47",
+    messages: [],
+    requests: []
   },
   {
     id: "u2",
     name: "Omar Dev",
     email: "provider@test.com",
-    password: "provider1234",
+    password: "Provider123",
     role: "provider",
     approved: true,
     avatar: "https://i.pravatar.cc/150?img=12",
+    services: [],
+    earnings: 0,
+    orders: []
   },
   {
     id: "u3",
-    name: "Admin",
+    name: "Admin User",
     email: "admin@test.com",
-    password: "admin1234",
+    password: "admin123",
     role: "admin",
     approved: true,
     avatar: "https://i.pravatar.cc/150?img=3",
-  },
+    permissions: ["users", "services", "approvals"]
+  }
 ];

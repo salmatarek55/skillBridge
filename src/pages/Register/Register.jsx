@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "../../services/authApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { FaShieldAlt } from "react-icons/fa";
 
@@ -13,12 +14,9 @@ import { FaShieldAlt } from "react-icons/fa";
     email: z.string().email("Please enter a valid email address, e.g. example@mail.com")
       .nonempty("email is required"),
     password: z
-      .string()
-      .nonempty("password is required")
-      .regex(
-        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
-        "Your password must contain at least 8 characters including uppercase, lowercase, number and special character (#?!@$%^&*-)",
-      ),
+  .string()
+  .min(6, "Password must be at least 6 characters")
+  .regex(/\d/, "Password must contain at least one number"),
     confirmPassword: z.string().nonempty("rePassword is required"),
     role: z.enum(["client", "provider"]),
   })
@@ -29,6 +27,7 @@ import { FaShieldAlt } from "react-icons/fa";
 
 
 export default function Register() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -50,13 +49,17 @@ export default function Register() {
 const onSubmit = async (data) => {
   try {
     const { confirmPassword, ...cleanData } = data;
-    await registerUser(cleanData);
+    const newUser = await registerUser(cleanData);
     toast.success(
       data.role === "provider"
         ? "Account submitted for approval ⏳"
         : "Account created successfully 🎉"
     );
     reset();
+    setTimeout(() => {
+      if (data.role === "provider") navigate("/account-pending");
+      else navigate("/login");
+    }, 1000);
   } catch (err) {
     toast.error(err.message);
   }
