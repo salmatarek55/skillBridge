@@ -44,6 +44,7 @@ const routes = createBrowserRouter([
           { path: "/messages", element: <Messages /> },
           { path: "/my-requests", element: <MyRequests /> },
           { path: "/profile", element: <Profile /> },
+          { path: "/account-pending", element : <AccountPending /> },
       ]},
       // provider routes
       {
@@ -51,8 +52,7 @@ const routes = createBrowserRouter([
         children: [
           { path: "/my-services", element: <MyServices /> },
           { path: "/orders", element: <ProviderOrders  /> },
-          { path: "/incoming-requests", element: <IncomingRequests /> },
-          { path: "/account-pending", element : <AccountPending /> },
+          { path: "/incoming-requests", element: <IncomingRequests /> }, 
           { path: "/dashboard", element : <Dashboard /> },
 
         ],
@@ -73,8 +73,9 @@ const routes = createBrowserRouter([
   },
 ]);
 
+ const queryClient =new  QueryClient();
 export default function App() {
-  const queryClient =new  QueryClient();
+ 
   return (
     <>
     <QueryClientProvider client={ queryClient}>
