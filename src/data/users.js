@@ -12,11 +12,22 @@ export const users = [
   },
   {
     id: "u2",
+    name: "Sama Sayed",
+    email: "client2@test.com",
+    password: "Client123",
+    role: "client",
+    approved: true,
+    avatar: "https://i.pravatar.cc/150?img=47",
+    messages: [],
+    requests: []
+  },
+  {
+    id: "u2",
     name: "Omar Dev",
     email: "provider@test.com",
     password: "Provider123",
     role: "provider",
-    approved: true,
+    approved: false,
     avatar: "https://i.pravatar.cc/150?img=12",
     services: [],
     earnings: 0,

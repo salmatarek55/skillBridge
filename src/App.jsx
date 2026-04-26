@@ -10,7 +10,7 @@ import Notfound from "./components/Notfound/Notfound";
 import { AuthContextProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import Messages from "./pages/Messages/Messages";
-import MyRequests from  "./pages/client/MyRequests"
+import MyRequests from "./pages/client/MyRequests"
 import MyServices from "./pages/provider/MyServices";
 import ProviderOrders from "./pages/provider/ProviderOrders";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -38,22 +38,24 @@ const routes = createBrowserRouter([
       { path: "/register", element: <Register /> },
       { path: "/services", element: <Services /> },
       { path: "/services/:serviceId", element: <ServiceDetails /> },
-      
+
       // protected routes
-      {element:<ProtectedRoutes />,children:[
+      {
+        element: <ProtectedRoutes />, children: [
           { path: "/messages", element: <Messages /> },
           { path: "/my-requests", element: <MyRequests /> },
           { path: "/profile", element: <Profile /> },
-          { path: "/account-pending", element : <AccountPending /> },
-      ]},
+          { path: "/account-pending", element: <AccountPending /> },
+        ]
+      },
       // provider routes
       {
         element: <ProviderRoute />,
         children: [
           { path: "/my-services", element: <MyServices /> },
-          { path: "/orders", element: <ProviderOrders  /> },
-          { path: "/incoming-requests", element: <IncomingRequests /> }, 
-          { path: "/dashboard", element : <Dashboard /> },
+          { path: "/orders", element: <ProviderOrders /> },
+          { path: "/incoming-requests", element: <IncomingRequests /> },
+          { path: "/dashboard", element: <Dashboard /> },
 
         ],
       },
@@ -62,10 +64,10 @@ const routes = createBrowserRouter([
         element: <AdminRoute />,
         children: [
           { path: "/admin/dashboard", element: <AdminDashboard /> },
-           { path: "/admin/pending-providers", element: <PendingProviders /> },
-            { path: "/admin/pending-services", element: <PendingServices /> },
-            { path: "/admin/all-users", element: <AllUsers /> },
-            
+          { path: "/admin/pending-providers", element: <PendingProviders /> },
+          { path: "/admin/pending-services", element: <PendingServices /> },
+          { path: "/admin/all-users", element: <AllUsers /> },
+
         ],
       },
       { path: "*", element: <Notfound /> },
@@ -73,17 +75,17 @@ const routes = createBrowserRouter([
   },
 ]);
 
- const queryClient =new  QueryClient();
+const queryClient = new QueryClient();
 export default function App() {
- 
+
   return (
     <>
-    <QueryClientProvider client={ queryClient}>
-             <AuthContextProvider>
-        <RouterProvider router={routes}></RouterProvider>
-        <Toaster position="top-right" />
-      </AuthContextProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthContextProvider>
+          <RouterProvider router={routes}></RouterProvider>
+          <Toaster position="top-right" />
+        </AuthContextProvider>
+      </QueryClientProvider>
 
     </>
   );

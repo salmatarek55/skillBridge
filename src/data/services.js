@@ -14,7 +14,7 @@ export const services = [
     ],
     status: "approved",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s2",
@@ -31,7 +31,7 @@ updatedAt: null
     ],
     status: "approved",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s3",
@@ -45,7 +45,7 @@ updatedAt: null
     images: ["https://picsum.photos/seed/logo1/400/300"],
     status: "approved",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s4",
@@ -59,7 +59,7 @@ updatedAt: null
     images: ["https://picsum.photos/seed/writing1/400/300"],
     status: "approved",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s5",
@@ -73,7 +73,7 @@ updatedAt: null
     images: ["https://picsum.photos/seed/api1/400/300"],
     status: "approved",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s6",
@@ -85,9 +85,9 @@ updatedAt: null
     deliveryTime: 30,
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/social1/400/300"],
-    status: "approved",
+    status: "pending",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s7",
@@ -99,9 +99,9 @@ updatedAt: null
     deliveryTime: 4,
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/video1/400/300"],
-    status: "approved",
+    status: "pending",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
   {
     serviceId: "s8",
@@ -113,9 +113,9 @@ updatedAt: null
     deliveryTime: 3,
     provider: { id: "u2", name: "Omar Dev", avatar: "https://i.pravatar.cc/150?img=12" },
     images: ["https://picsum.photos/seed/wp1/400/300"],
-    status: "approved",
+    status: "pending",
     createdAt: null,
-updatedAt: null
+    updatedAt: null
   },
 ];
 
