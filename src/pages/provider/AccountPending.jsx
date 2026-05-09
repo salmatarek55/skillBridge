@@ -1,12 +1,17 @@
 import React from 'react'
-import { useContext } from "react";
+import { FiClock, FiLogOut } from "react-icons/fi";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FiClock, FiLogOut } from "react-icons/fi";
 
 export default function AccountPending() {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+   useEffect(() => {
+  if (!user || user.role !== "provider") {
+    navigate("/");
+  }
+}, []);
     const handleLogout = () => {
     logout();
     navigate("/login");

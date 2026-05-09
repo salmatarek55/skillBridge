@@ -7,40 +7,41 @@ export const users = [
     role: "client",
     approved: true,
     avatar: "https://i.pravatar.cc/150?img=47",
-    messages: [],
-    requests: []
   },
   {
-    id: "u2",
+    id: "u2",                       
     name: "Sama Sayed",
     email: "client2@test.com",
     password: "Client123",
     role: "client",
     approved: true,
-    avatar: "https://i.pravatar.cc/150?img=47",
-    messages: [],
-    requests: []
+    avatar: "https://i.pravatar.cc/150?img=44",
   },
   {
-    id: "u2",
+    id: "u3",                          
     name: "Omar Dev",
     email: "provider@test.com",
     password: "Provider123",
     role: "provider",
     approved: false,
     avatar: "https://i.pravatar.cc/150?img=12",
-    services: [],
-    earnings: 0,
-    orders: []
   },
   {
-    id: "u3",
+    id: "u4",                          
     name: "Admin User",
     email: "admin@test.com",
     password: "admin123",
     role: "admin",
     approved: true,
     avatar: "https://i.pravatar.cc/150?img=3",
-    permissions: ["users", "services", "approvals"]
-  }
+  },
+  {
+    id: "u5",                         
+    name: "soly Dev",
+    email: "soly@test.com",
+    password: "Provider123",
+    role: "provider",
+    approved: false,
+    avatar: "https://i.pravatar.cc/150?img=12",
+  },
 ];

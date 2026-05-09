@@ -1,86 +1,150 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import * as adminService from "../../services/adminApi";
+import { getCategoryByName } from "../../data/categories";
+
+const categoryClass = (categoryName) => {
+  const category = getCategoryByName(categoryName);
+  return category.bg + " " + category.border;
+};
 
 export default function PendingServices() {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(null);
+  const queryClient = useQueryClient();
+
+  const {
+    data: services = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["pendingServices"],
+    queryFn: async () => {
+      const res = await adminService.getPendingServices();
+      return res.data.data;
+    },
+  });
 
   useEffect(() => {
-    adminService.getPendingServices().then(res => {
-      setServices(res.data.data);
-      setLoading(false);
-    });
-  }, []);
+    if (isError) toast.error("Failed to load pending services");
+  }, [isError]);
 
-  const handleReview = async (id, action) => {
-    setBusy(id);
-    const isApprove = action === 'approve';
-    try {
-      await adminService.reviewService(id, isApprove);
-      setServices(prev => prev.filter(s => s.serviceId !== id));
-    } catch (err) {
-      console.error("Action failed", err);
-    } finally {
-      setBusy(null);
-    }
-  };
+  const {
+    mutate: reviewService,
+    isPending: busy,
+    variables,
+  } = useMutation({
+    mutationFn: ({ id, approve }) => adminService.reviewService(id, approve),
+    onSuccess: (_, { approve }) => {
+      toast.success(approve ? "Service approved ✅" : "Service rejected");
+      queryClient.invalidateQueries({ queryKey: ["pendingServices"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
+    },
+    onError: () => toast.error("Action failed, please try again"),
+  });
 
   return (
-    <div className="max-h-screen max-w-screen  bg-[#141824] text-slate-100 px-5 py-10   font-sans   rounded-3xl shadow-2xl ">
-
-      <div className="flex justify-between items-end mb-10 border-b border-slate-800/50 pb-6">
-        <div>
-          <p className="text-[10px] tracking-[0.3em] text-indigo-400 font-bold mb-1 uppercase">Admin Review Queue</p>
-          <h1 className="text-4xl font-black bg-gradient-to-r from-white to-indigo-400 bg-clip-text text-transparent">Pending Services</h1>
-        </div>
-        <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-4 py-1.5 rounded-full">
-          <span className="text-xs font-bold text-amber-300 tracking-wider">
-            {loading ? "—" : services.length} <span className="text-[10px] font-medium text-slate-500 ml-1 uppercase">Waiting</span>
+    <div className="max-w-4xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <p className="text-[10px] font-bold tracking-widest text-purple-400 uppercase mb-1">
+              Admin Review Queue
+            </p>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 via-purple-400 to-purple-500 bg-clip-text text-transparent tracking-tight">
+              Pending Services
+            </h1>
+          </div>
+          <span className="text-xs px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-600 font-semibold">
+            {isLoading ? "—" : services.length} Waiting
           </span>
         </div>
-      </div>
 
-      {loading ? (
-        <div className="text-center py-20 text-slate-500">Loading queue...</div>
-      ) : services.length === 0 ? (
-        <div className="text-center py-16 bg-[#131720] border border-slate-800 rounded-3xl">
-          <p className="text-slate-400 font-medium">✓ All services reviewed!</p>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {services.map((sv) => (
-            <div key={sv.serviceId} className="bg-[#131720] border border-slate-800/60 rounded-2xl p-5 hover:border-indigo-500/20 transition-all">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-bold text-slate-100 text-lg mb-4">{sv.title}</h3>
-                  <div className="flex gap-3 text-[11px] flex-wrap">
-                    <h3 className="bg-[#0c0e14] text-xs px-3 py-1 rounded-lg text-slate-400 border border-slate-800">💰 ${sv.price}</h3>
-                    <h3 className="bg-[#0c0e14] text-xs px-3 py-1 rounded-lg text-slate-400 border border-slate-800">⏱️ {sv.deliveryTime} Days</h3>
-                    <h3 className="bg-[#0c0e14] text-xs px-3 py-1 rounded-lg text-indigo-400 border border-slate-800 font-bold">👤 {sv.provider?.name || "Provider"}</h3>
+        {/* Content */}
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-24 rounded-xl bg-purple-50/60 animate-pulse"
+              />
+            ))}
+          </div>
+        ) : services.length === 0 ? (
+          <div className="text-center py-16 bg-purple-50 border border-purple-100 rounded-xl">
+            <p className="text-3xl mb-3">✅</p>
+            <p className="text-purple-500 font-medium text-sm">
+              All services reviewed!
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col divide-y divide-indigo-50">
+            {services.map((sv) => {
+              const isThisBusy = busy && variables?.id === sv.id;
+              return (
+                <div
+                  key={sv.id}
+                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                >
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm text-indigo-900 mb-2">
+                      {sv.title}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {sv.category &&
+                        (() => {
+                          const cat = getCategoryByName(sv.category);
+
+                          return (
+                            <span
+                              className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border flex items-center gap-1
+      ${cat.bg} ${cat.color} ${cat.border}`}
+                            >
+                              <span>{cat.icon}</span>
+                              {cat.name}
+                            </span>
+                          );
+                        })()}
+                      <span className="text-xs text-indigo-400">
+                        💰 ${sv.price}
+                      </span>
+                      <span className="text-xs text-indigo-400">
+                        ⏱ {sv.deliveryTime} days
+                      </span>
+                      <span className="text-xs text-purple-500 font-medium">
+                        👤 {sv.provider?.name || sv.providerName || "Provider"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 flex-shrink-0 mt-0.5">
+                    <button
+                      disabled={isThisBusy}
+                      onClick={() =>
+                        reviewService({ id: sv.id, approve: true })
+                      }
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs font-semibold hover:bg-green-100 transition disabled:opacity-50 cursor-pointer"
+                    >
+                      {isThisBusy ? "..." : "✓ Approve"}
+                    </button>
+                    <button
+                      disabled={isThisBusy}
+                      onClick={() =>
+                        reviewService({ id: sv.id, approve: false })
+                      }
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs font-semibold hover:bg-red-100 transition disabled:opacity-50 cursor-pointer"
+                    >
+                      {isThisBusy ? "..." : "✕ Reject"}
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    disabled={busy === sv.serviceId}
-                    onClick={() => handleReview(sv.serviceId, "approve")}
-                    className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-500 hover:text-white transition-all disabled:opacity-50"
-                  >
-                    {busy === sv.serviceId ? "..." : "Approve"}
-                  </button>
-                  <button
-                    disabled={busy === sv.serviceId}
-                    onClick={() => handleReview(sv.serviceId, "reject")}
-                    className="bg-red-500/10 text-red-500 border border-red-500/20 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
-                  >
-                    Reject
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

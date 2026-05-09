@@ -1,15 +1,55 @@
-// src/data/categories.js
-
 export const categories = [
-  { id: 1, name: "Design", icon: "🎨", color: "#ff6b6b", bg: "rgba(255,107,107,0.12)" },
-  { id: 2, name: "FrontEnd", icon: "💻", color: "#25c4a0", bg: "rgba(37,196,160,0.12)" },
-  { id: 3, name: "BackEnd", icon: "💻", color: "#25c4a0", bg: "rgba(37,196,160,0.12)" },
-  { id: 4, name: "UI UX", icon: "🎨", color: "#ff6b6b", bg: "rgba(255,107,107,0.12)" },
-  { id: 5, name: "Mobile", icon: "📱", color: "#25c4a0", bg: "rgba(37,196,160,0.12)" },
+  {
+    id: 1,
+    name: "Design",
+    icon: "🎨",
+    color: "text-purple-600",
+    bg: "bg-purple-50",
+    border: "border-purple-200",
+  },
 
+  {
+    id: 2,
+    name: "FrontEnd",
+    icon: "💻",
+    color: "text-indigo-600",
+    bg: "bg-indigo-50",
+    border: "border-indigo-200",
+  },
+
+  {
+    id: 3,
+    name: "BackEnd",
+    icon: "🛠️",
+    color: "text-cyan-600",
+    bg: "bg-cyan-50",
+    border: "border-cyan-200",
+  },
+
+  {
+    id: 4,
+    name: "UI UX",
+    icon: "✨",
+    color: "text-pink-600",
+    bg: "bg-pink-50",
+    border: "border-pink-200",
+  },
+
+  {
+    id: 5,
+    name: "Mobile",
+    icon: "📱",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+  },
 ];
 
 export const getCategoryByName = (name) =>
-  categories.find((c) => c.name === name) ?? {
-    name, icon: "🔧", color: "#94a3b8", bg: "rgba(100,116,139,0.12)",
+  categories.find((c) => c.name === name) || {
+    name,
+    icon: "🔧",
+    color: "text-gray-600",
+    bg: "bg-gray-50",
+    border: "border-gray-200",
   };

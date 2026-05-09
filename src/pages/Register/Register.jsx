@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "../../services/authApi";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -28,6 +31,8 @@ import { FaShieldAlt } from "react-icons/fa";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+ 
   const {
     register,
     handleSubmit,
@@ -46,6 +51,10 @@ export default function Register() {
   });
   const role = watch("role");
 
+
+   if (user) {
+  return <Navigate to="/" replace />;
+}
 const onSubmit = async (data) => {
   try {
     const { confirmPassword, ...cleanData } = data;

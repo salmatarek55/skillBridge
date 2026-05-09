@@ -8,6 +8,7 @@ import { isClient } from './../../Roles/Roles';
 import toast from "react-hot-toast";
 import StarRating from "../../components/StarRating/StarRating";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import PortfolioGallery from "../../components/PortfolioGallery/PortfolioGallery";
 import {
   FiArrowLeft,
   FiClock,
@@ -104,8 +105,8 @@ return (
               {service?.title}
             </h1>
 
-            <div className="flex items-center gap-3">
-              <img src={service?.provider?.avatar} className="w-10 h-10 rounded-full object-cover" />
+            <div className="flex items-center gap-3 mb-5">
+              <img src={service?.provider?.avatar} className="w-10 h-10 rounded-full object-cover " />
               
               <div>
                 <p className="text-sm font-semibold">
@@ -114,13 +115,7 @@ return (
               </div>
             </div>
 
-           {service?.images?.[0] && (
-            <img
-              src={service.images[0]}
-              alt="service"
-              className="rounded-xl w-full h-100 object-cover mt-5"
-            />
-          )}
+          <PortfolioGallery images={service?.images || []} />
 
           
           <div className="bg-white rounded-2xl border mt-4 border-gray-200 shadow-md shadow-gray-300  p-6">

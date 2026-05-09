@@ -1,16 +1,18 @@
+
 import React, { useContext } from "react";
-import { AuthContext } from "./../../context/AuthContext";
-import { loginUser } from "../../services/authApi";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner.jsx";
+import { AuthContext } from "../../context/AuthContext";
+import { loginUser } from "../../services/authApi";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+const navigate = useNavigate();
+  const { login, user } = useContext(AuthContext);
+
    
   const form = useForm({
     defaultValues: {
@@ -25,6 +27,10 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = form;
 
+
+      if (user) {
+  return <Navigate to="/" replace />;
+}
   const onSubmit = async (data) => {
     try {
       const user = await loginUser(data.email, data.password);

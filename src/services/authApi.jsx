@@ -9,7 +9,7 @@ export function loginUser(email, password) {
       );
 
       if (!user) {
-        reject({ message: "Invalid credentials" });
+       reject(new Error("Invalid credentials"));
         return;
       }
        
@@ -31,7 +31,7 @@ export function registerUser(newUser) {
       const exists = users.find((u) => u.email === newUser.email);
 
       if (exists) {
-        reject({ message: "User already exists" });
+        reject(new Error("User already exists"));
         return;
       }
 

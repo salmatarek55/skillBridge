@@ -151,7 +151,7 @@ export default function Navbar() {
           )}
                      {/* /////////////////////////////// */}
           {/* LOGGED */}
-          {user && (
+          {user&& (
             <div ref={dropdownRef} className="flex items-center gap-4 relative">
 
               {/* Messages + Badge */}
@@ -169,6 +169,7 @@ export default function Navbar() {
               {/* Avatar */}
               <img
                 src={user.avatar}
+                alt={user.name}
                 onClick={(e) => {
                   e.stopPropagation(); 
                   setOpenDropdown(!openDropdown);
