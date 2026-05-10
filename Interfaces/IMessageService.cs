@@ -1,0 +1,11 @@
+using SkillBridge.Helpers;
+using SkillBridge.Models.DTOs.Messages;
+
+namespace SkillBridge.Interfaces
+{
+    public interface IMessageService
+{
+    Task<ApiResponse<MessageDto>> SendMessageAsync(int senderId, SendMessageDto dto);
+    Task<ApiResponse<List<MessageDto>>> GetConversationAsync(int userId, int requestId);
+}
+}

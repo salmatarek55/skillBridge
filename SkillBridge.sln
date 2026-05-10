@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillBridge", "SkillBridge.csproj", "{FB842C4B-3D36-2841-9890-9C04C3531F9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB842C4B-3D36-2841-9890-9C04C3531F9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB842C4B-3D36-2841-9890-9C04C3531F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB842C4B-3D36-2841-9890-9C04C3531F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB842C4B-3D36-2841-9890-9C04C3531F9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8DF44BC-089C-440B-ACB8-7D31F48CD230}
+	EndGlobalSection
+EndGlobal
