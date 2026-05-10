@@ -57,8 +57,8 @@ export default function Register() {
 }
 const onSubmit = async (data) => {
   try {
-    const { confirmPassword, ...cleanData } = data;
-    const newUser = await registerUser(cleanData);
+   const { confirmPassword: _confirmPassword, ...cleanData } = data;
+await registerUser(cleanData);
     toast.success(
       data.role === "provider"
         ? "Account submitted for approval ⏳"

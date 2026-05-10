@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\IA.net\\SkillBridge-Backend\\SkillBridge.csproj": {}
+    "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\SkillBridge.csproj": {}
   },
   "projects": {
-    "D:\\IA.net\\SkillBridge-Backend\\SkillBridge.csproj": {
+    "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\SkillBridge.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\IA.net\\SkillBridge-Backend\\SkillBridge.csproj",
+        "projectUniqueName": "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\SkillBridge.csproj",
         "projectName": "SkillBridge",
-        "projectPath": "D:\\IA.net\\SkillBridge-Backend\\SkillBridge.csproj",
+        "projectPath": "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\SkillBridge.csproj",
         "packagesPath": "C:\\Users\\sama sayed\\.nuget\\packages\\",
-        "outputPath": "D:\\IA.net\\SkillBridge-Backend\\obj\\",
+        "outputPath": "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sama sayed\\AppData\\Roaming\\NuGet\\NuGet.Config"

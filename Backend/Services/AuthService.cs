@@ -51,7 +51,8 @@ namespace SkillBridge.Services
                 Token = token,
                 FullName = user.FullName,
                 Email = user.Email,
-                Role = user.Role.ToString()
+                Role = user.Role.ToString(),
+                Status = user.Status.ToString()
             };
         }
 
@@ -68,7 +69,9 @@ namespace SkillBridge.Services
             if (!passwordValid)
                 return null;
 
-            if (user.Role == UserRole.Provider && user.Status != UserStatus.Approved && user.Status != UserStatus.Active)
+            if (user.Role == UserRole.Provider && 
+                user.Status != UserStatus.Approved && 
+                user.Status != UserStatus.Active)
                 return null;
 
             var token = _jwtHelper.GenerateToken(user);
@@ -78,13 +81,15 @@ namespace SkillBridge.Services
                 Token = token,
                 FullName = user.FullName,
                 Email = user.Email,
-                Role = user.Role.ToString()
+                Role = user.Role.ToString(),
+                Status = user.Status.ToString()
             };
         }
 
         public async Task<User?> GetCurrentUserAsync(int userId)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Id == userId);
         }
 
         public async Task<bool> LogoutAsync(string token)
@@ -93,9 +98,7 @@ namespace SkillBridge.Services
                 return false;
 
             var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-
             var jwtToken = handler.ReadJwtToken(token);
-
             var expiry = jwtToken.ValidTo;
 
             var blacklistedToken = new BlacklistedToken

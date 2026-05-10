@@ -1,66 +1,101 @@
-import { users } from "../data/users";
-import { services } from "../data/services";
+import api from "./axiosInstance";
 
-const delay = (ms = 450) => new Promise((res) => setTimeout(res, ms));
+// ── Dashboard Stats ───────────────────────────────────────────────────
+export const getAdminStats = async () => {
+  const [providersRes, servicesRes] = await Promise.all([
+    api.get("/Admin/pending-providers"),
+    api.get("/Admin/pending-services"),
+  ]);
 
-const ok = async (data) => {
-  await delay();
+  const pendingProviders = providersRes.data.data?.length || 0;
+  const pendingServices  = servicesRes.data.data?.length  || 0;
+
+  return {
+    data: {
+      success: true,
+      data: { pendingProviders, pendingServices },
+    },
+  };
+};
+
+// ── Providers ─────────────────────────────────────────────────────────
+
+export const getPendingProviders = async () => {
+  const res = await api.get("/Admin/pending-providers");
+
+  // normalize — الـ backend بيرجع { id, fullName, email, role, status, createdAt }
+  const data = res.data.data.map((p) => ({
+    id:     p.id,
+    name:   p.fullName,
+    email:  p.email,
+    role:   p.role,
+    status: p.status,
+    avatar: `https://i.pravatar.cc/150?u=${p.email}`,
+  }));
+
   return { data: { success: true, data } };
 };
 
-// ── Dashboard Stats
-export const getAdminStats = async () => {
-  const pendingProviders = users.filter(u => u.role?.toLowerCase() === "provider" && u.approved === false).length;
-  const pendingServices = services.filter(s => s.status === "pending").length;
-  return ok({ pendingProviders, pendingServices });
+export const reviewProvider = async (id, approve) => {
+  const endpoint = approve
+    ? `/Admin/approve-provider/${id}`
+    : `/Admin/reject-provider/${id}`;
+
+  const res = await api.patch(endpoint);
+  return { data: { success: true, data: res.data.data } };
 };
 
-// ── Providers 
-export const getPendingProviders = () => {
-  const pending = users
-    .filter((u) => u.role?.toLowerCase() === "provider" && u.approved === false)
-    .map((u) => ({
-      id: u.id,
-      name: u.fullName || u.name,
-      email: u.email,
-      avatar: u.avatar,
-      approved: false,
+// ── Services ──────────────────────────────────────────────────────────
 
-    }));
-  return ok(pending);
+export const getPendingServices = async () => {
+  const res = await api.get("/Admin/pending-services");
+
+  // normalize — الـ backend بيرجع deliveryTimeInDays مش deliveryTime
+  const data = res.data.data.map((s) => ({
+    id:           s.serviceId,
+    serviceId:    s.serviceId,
+    title:        s.title,
+    description:  s.description,
+    category:     s.category || "General",
+    price:        s.price,
+    deliveryTime: s.deliveryTimeInDays,
+    status:       s.status,
+    providerId:   s.providerId,
+    provider: {
+      name: s.providerName,
+    },
+    createdAt: s.createdAt,
+  }));
+
+  return { data: { success: true, data } };
 };
 
-export const reviewProvider = (id, approve, note = "") => {
-  const user = users.find((u) => u.id === id);
-  if (user) {
-    user.approved = approve;
-    user.adminNote = note || null;
-  }
-  return ok({ id, approved: approve });
+export const reviewService = async (id, approve) => {
+  const endpoint = approve
+    ? `/Admin/approve-service/${id}`
+    : `/Admin/reject-service/${id}`;
+
+  const res = await api.patch(endpoint);
+  return { data: { success: true, data: res.data.data } };
 };
 
-// ── Services 
-export const getPendingServices = () => {
-  const pending = services
-    .filter((s) => s.status === "pending")
-    .map((s) => ({
-      ...s,
-      id: s.serviceId,
-      providerName: s.provider?.name || "Unknown",
-      providerEmail: users.find((u) => u.id === s.providerId)?.email ?? "contact@skillbridge.com",
-    }));
-  return ok(pending);
-};
+// ── All Users ─────────────────────────────────────────────────────────
 
-export const reviewService = (id, approve, note = "") => {
-  const svc = services.find((s) => s.serviceId === id);
-  if (svc) {
-    svc.status = approve ? "approved" : "rejected";
-    svc.adminNote = note || null;
-  }
-  return ok({ id, approved: approve });
-};
 export const getAllUsers = async () => {
-  const data = users.filter(u => u.role?.toLowerCase() !== "admin");
-  return ok(data);
+  const res = await api.get("/Admin/users");
+
+  // normalize + فلتر الـ admin
+  const data = res.data.data
+    .filter((u) => u.role?.toLowerCase() !== "admin")
+    .map((u) => ({
+      id:     u.id,
+      name:   u.fullName,
+      email:  u.email,
+      phone:  u.phone,
+      role:   u.role?.toLowerCase(),
+      status: u.status,
+      avatar: `https://i.pravatar.cc/150?u=${u.email}`,
+    }));
+
+  return { data: { success: true, data } };
 };

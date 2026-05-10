@@ -1,51 +1,60 @@
-import { users } from "../data/users";
+import api from "./axiosInstance";
 
-// LOGIN
-export function loginUser(email, password) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const user = users.find(
-        (u) => u.email === email && u.password === password
-      );
 
-      if (!user) {
-       reject(new Error("Invalid credentials"));
-        return;
-      }
-       
-    
+const normalizeRole = (role) => {
+  if (!role) return "client";
+  return role.toLowerCase(); 
+};
 
-      resolve({
-        ...user,
-        token: "fake-token-123"
-      });
-    }, 500);
+const ROLE_MAP = {
+  client:   3,
+  provider: 2,
+  admin:    1,
+};
+export async function loginUser(email, password) {
+  const res = await api.post("/Auth/login", { email, password });
+  const data = res.data.data;
+
+  const role = normalizeRole(data.role);
+  
+  return {
+    id:       data.id         || data.userId || null,
+    name:     data.fullName   || data.name,
+    email:    data.email,
+    role:     role,
+    approved: role === "provider" 
+      ? (data.status === "Active" || data.status === "Approved" || data.isApproved === true)
+      : true,
+    avatar:   data.avatar || data.profileImage || `https://i.pravatar.cc/150?u=${data.email}`,
+    token:    data.token,
+  };
+}
+export async function registerUser(newUser) {
+  const res = await api.post("/Auth/register", {
+    fullName: newUser.name,
+    email:    newUser.email,
+    password: newUser.password,
+    phone:    newUser.phone || "0000000000",
+    role:     ROLE_MAP[newUser.role] ?? 3,
   });
+
+  const data = res.data?.data || res.data;
+
+  return {
+    id:       data.id       || data.userId || null,
+    name:     data.fullName || data.name   || newUser.name,
+    email:    data.email    || newUser.email,
+    role:     normalizeRole(data.role) || newUser.role,
+    approved: newUser.role === "provider" ? false : true,
+    avatar:   data.avatar   || `https://i.pravatar.cc/150?u=${newUser.email}`,
+    token:    data.token    || data.accessToken || null,
+  };
 }
 
-
-// REGISTER
-export function registerUser(newUser) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const exists = users.find((u) => u.email === newUser.email);
-
-      if (exists) {
-        reject(new Error("User already exists"));
-        return;
-      }
-
-
-      const createdUser = {
-        ...newUser,
-        id: `u${users.length + 1}`,
-        avatar: "https://i.pravatar.cc/150",
-        approved: newUser.role === "provider" ? false : true
-      };
-
-      users.push(createdUser);
-
-      resolve(createdUser);
-    }, 500);
-  });
+export async function logoutUser() {
+  try {
+    await api.post("/Auth/logout");
+  } catch {
+    localStorage.removeItem("user");
+  }
 }

@@ -8,8 +8,8 @@ using System.Text;
 using SkillBridge.Helpers;
 using Microsoft.OpenApi.Models;
 using SkillBridge.Hubs;
-using Helpers;
 using SkillBridge.Middleware;
+using Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // SignalR
 builder.Services.AddSignalR();
+
 // Memory Cache
 builder.Services.AddMemoryCache();
 
@@ -29,15 +30,27 @@ builder.Services
     .AddQueryType<SkillBridge.GraphQL.Queries.ServiceQuery>()
     .AddMutationType<SkillBridge.GraphQL.Mutations.ServiceMutation>();
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // Dependency Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
-builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddHttpContextAccessor();
 
 // Controllers + JSON
@@ -93,6 +106,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
+
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -105,15 +119,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 }
                 return Task.CompletedTask;
             },
+
             OnTokenValidated = async context =>
             {
                 var dbContext = context.HttpContext.RequestServices
                     .GetRequiredService<AppDbContext>();
+
                 var token = context.Request.Headers["Authorization"]
                     .ToString()
                     .Replace("Bearer ", "");
+
                 var tokenInDb = await dbContext.BlacklistedTokens
                     .FirstOrDefaultAsync(x => x.Token == token);
+
                 if (tokenInDb != null)
                 {
                     context.Fail("Token is blacklisted");
@@ -123,7 +141,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
-app.UseMiddleware<SkillBridge.Middleware.ExceptionHandlingMiddleware>();
+
+// Seed Database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -138,6 +157,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // Middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 

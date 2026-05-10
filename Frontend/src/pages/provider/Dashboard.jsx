@@ -44,7 +44,7 @@ export default function Dashboard() {
 
   const { data: services = [], isError: sErr } = useQuery({
     queryKey: ["providerServices", user?.id],
-    queryFn: () => getProviderServices(user.id),
+    queryFn: getProviderServices,
     enabled: !!user?.id,
   });
 

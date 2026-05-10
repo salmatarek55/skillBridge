@@ -27,7 +27,7 @@ export default function MyServices() {
     isError,
   } = useQuery({
     queryKey: ["providerServices", user?.id],
-    queryFn: () => getProviderServices(user.id),
+    queryFn: getProviderServices,
     enabled: !!user?.id,
   });
 
