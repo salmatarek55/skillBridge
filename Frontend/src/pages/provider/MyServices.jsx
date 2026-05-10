@@ -111,9 +111,9 @@ export default function MyServices() {
                 className="group bg-gray-50 border border-purple-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition flex flex-col"
               >
                 {/* Image */}
-                {sv.images?.[0] ? (
+                {(sv.thumbnailUrl || sv.images?.[0]) ? (
                   <img
-                    src={sv.images[0]}
+                    src={sv.thumbnailUrl || sv.images?.[0]}
                     className="h-52 w-full object-cover group-hover:scale-105 transition"
                   />
                 ) : (
@@ -121,7 +121,6 @@ export default function MyServices() {
                     🛠️
                   </div>
                 )}
-
                 <div className="p-5 flex flex-col flex-1">
                   <h2 className="text-lg font-bold  mb-2">{sv.title}</h2>
 

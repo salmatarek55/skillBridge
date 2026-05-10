@@ -32,30 +32,33 @@ const navigate = useNavigate();
   return <Navigate to="/" replace />;
 }
   const onSubmit = async (data) => {
-    try {
-      const user = await loginUser(data.email, data.password);
+  try {
+    const loggedUser = await loginUser(data.email, data.password);
 
-      login(user);
+    login(loggedUser);
 
-      toast.success("Login Successfully 👍");
+    toast.success("Login Successfully 👍");
 
-      setTimeout(() => {
-        if (user.role === "admin") {
-          navigate("/admin/dashboard");
-        } else if (user.role === "provider") {
-          if (!user.approved) {
-            navigate("/account-pending");
-          } else {
-            navigate("/dashboard");
-          }
+    setTimeout(() => {
+      if (loggedUser.role === "admin") {
+        navigate("/admin/dashboard");
+      } 
+      else if (loggedUser.role === "provider") {
+        if (!loggedUser.approved) {
+          navigate("/account-pending");
         } else {
-          navigate("/services");
+          navigate("/dashboard");
         }
-      }, 1000);
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+      } 
+      else {
+        navigate("/services");
+      }
+    }, 300);
+
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
 
   return (
     <div className="h-screen w-full flexfont-sans">

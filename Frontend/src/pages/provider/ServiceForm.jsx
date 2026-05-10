@@ -7,21 +7,16 @@ import { createService, updateService } from "../../services/ServiceApi";
 import { categories } from "../../data/categories";
 import { FaImage } from "react-icons/fa";
 
-const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-
 export default function ServiceForm({ open, onClose, service }) {
   const { user } = useContext(AuthContext);
   const queryClient = useQueryClient();
   const isEdit = !!service;
-  const [images, setImages]     = useState([]);
+
+  const [images, setImages] = useState([]);
   const [imgError, setImgError] = useState("");
-  const fileInputRef   = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   const {
     register,
@@ -33,62 +28,96 @@ export default function ServiceForm({ open, onClose, service }) {
       title: "", description: "", category: "Design", price: "", deliveryTime: "",
     },
   });
-              //////////////////////////////////////////////////////
-   useEffect(() => {
+
+  useEffect(() => {
     if (!open) return;
     if (isEdit && service) {
       reset({
-        title:        service.title,
-        description:  service.description,
-        category:     service.category,
-        price:        service.price,
+        title: service.title,
+        description: service.description,
+        category: service.category,
+        price: service.price,
         deliveryTime: service.deliveryTime,
       });
-      setImages((service.images || []).map((src) => ({ src })));
+      setImages(service.images || []);
     } else {
       reset({ title: "", description: "", category: "Design", price: "", deliveryTime: "" });
       setImages([]);
     }
     setImgError("");
   }, [open, service, isEdit, reset]);
-            //////////////////////////////////////////////////////
+
   const handleFilePick = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
+
     const remaining = 4 - images.length;
     if (remaining <= 0) {
       setImgError("Maximum 4 images allowed.");
       return;
     }
+
     const allowed = files.slice(0, remaining);
     setImgError("");
- 
+    setUploading(true);
+
     try {
-      const converted = await Promise.all(
-        allowed.map(async (file) => ({
-          src:  await toBase64(file),
-          file,
-        }))
-      );
-      setImages((prev) => [...prev, ...converted]);
+      const uploadedUrls = [];
+
+      for (const file of allowed) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("http://localhost:5242/api/Upload/image", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user"))?.token}`
+          },
+          body: formData,
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          uploadedUrls.push(data.url);
+        } else {
+          toast.error(data.message || "Upload failed");
+        }
+      }
+
+      setImages((prev) => [...prev, ...uploadedUrls]);
+      toast.success("Images uploaded ✅");
+
     } catch {
-      toast.error("Failed to read image file.");
+      toast.error("Failed to upload images");
+    } finally {
+      setUploading(false);
     }
+
     e.target.value = "";
   };
+
   const removeImage = (idx) =>
     setImages((prev) => prev.filter((_, i) => i !== idx));
- 
-              //////////////////////////////////////////////////////
+
   const { mutate: submit, isPending } = useMutation({
     mutationFn: (formData) => {
+      const categoryId = categories.find(
+        (c) => c.name.toLowerCase() === formData.category?.toLowerCase()
+      )?.id || 1;
+
       const payload = {
-        ...formData,
-        images: images.map((img) => img.src),
+        title: formData.title,
+        description: formData.description,
+        categoryId: categoryId,
+        price: Number(formData.price),
+        deliveryTime: Number(formData.deliveryTime),
+        images: images.filter((img) => img.startsWith("http")),
       };
+
       return isEdit
         ? updateService(service.serviceId, payload)
-        : createService(user.id, user.name, user.avatar, payload);
+        : createService(payload);
     },
     onSuccess: () => {
       toast.success(
@@ -101,15 +130,14 @@ export default function ServiceForm({ open, onClose, service }) {
     },
     onError: (err) => toast.error(err.message || "Something went wrong"),
   });
-                 //////////////////////////////////////////////////////
+
   if (!open) return null;
- 
 
   return (
     <div className="fixed inset-0 bg-indigo-900/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(99,102,241,0.18)] border border-indigo-100 w-full max-w-lg max-h-[90vh] overflow-y-auto">
- 
-        {/* ── Header ── */}
+
+        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-indigo-50 sticky top-0 bg-white z-10">
           <div>
             <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-0.5">
@@ -126,10 +154,10 @@ export default function ServiceForm({ open, onClose, service }) {
             ✕
           </button>
         </div>
- 
-        {/* ── Form ── */}
+
+        {/* Form */}
         <form onSubmit={handleSubmit(submit)} className="p-6 flex flex-col gap-5">
- 
+
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-purple-800 mb-1.5">
@@ -147,7 +175,7 @@ export default function ServiceForm({ open, onClose, service }) {
               <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
             )}
           </div>
- 
+
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-purple-800 mb-1.5">
@@ -166,10 +194,9 @@ export default function ServiceForm({ open, onClose, service }) {
               <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
             )}
           </div>
- 
+
           {/* Category + Price + Delivery */}
           <div className="grid grid-cols-3 gap-3">
-            {/* category */}
             <div>
               <label className="block text-sm font-medium text-purple-800 mb-1.5">
                 Category
@@ -185,8 +212,7 @@ export default function ServiceForm({ open, onClose, service }) {
                 ))}
               </select>
             </div>
- 
-            {/* Price */}
+
             <div>
               <label className="block text-sm font-medium text-purple-800 mb-1.5">
                 Price ($)
@@ -205,8 +231,7 @@ export default function ServiceForm({ open, onClose, service }) {
                 <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
               )}
             </div>
- 
-            {/* Delivery */}
+
             <div>
               <label className="block text-sm font-medium text-purple-800 mb-1.5">
                 Delivery (days)
@@ -226,8 +251,8 @@ export default function ServiceForm({ open, onClose, service }) {
               )}
             </div>
           </div>
- 
-          {/* ── Portfolio Images ── */}
+
+          {/* Images */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-purple-800">
@@ -235,18 +260,17 @@ export default function ServiceForm({ open, onClose, service }) {
               </label>
               <span className="text-xs text-purple-300">{images.length} / 4</span>
             </div>
- 
-            {/* Preview grid */}
+
+            {/* Preview */}
             {images.length > 0 && (
               <div className="grid grid-cols-4 gap-2 mb-3">
                 {images.map((img, idx) => (
-                  <div key={idx} className="relative group aspect-square">
+                  <div key={`img-${idx}`} className="relative group aspect-square">
                     <img
-                      src={img.src}
+                      src={img}
                       alt={`preview-${idx}`}
                       className="w-full h-full object-cover rounded-xl border border-purple-100"
                     />
-                    {/* Remove button */}
                     <button
                       type="button"
                       onClick={() => removeImage(idx)}
@@ -258,24 +282,23 @@ export default function ServiceForm({ open, onClose, service }) {
                 ))}
               </div>
             )}
- 
-            {/* Upload area */}
+
+            {/* Upload */}
             {images.length < 4 && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full border-2 border-dashed border-purple-200 hover:border-purple-400 bg-purple-50 hover:bg-purple-100 rounded-xl py-6 flex flex-col items-center gap-2 transition cursor-pointer"
+                disabled={uploading}
+                className="w-full border-2 border-dashed border-purple-200 hover:border-purple-400 bg-purple-50 hover:bg-purple-100 rounded-xl py-6 flex flex-col items-center gap-2 transition cursor-pointer disabled:opacity-60"
               >
-                <span className="text-2xl text-purple-500"><FaImage/></span>
+                <span className="text-2xl text-purple-500"><FaImage /></span>
                 <p className="text-sm font-medium text-purple-500">
-                  Click to upload images
+                  {uploading ? "Uploading..." : "Click to upload images"}
                 </p>
-                <p className="text-xs text-purple-300">
-                  PNG, JPG, WEBP — max 4 images
-                </p>
+                <p className="text-xs text-purple-300">PNG, JPG, WEBP — max 4 images</p>
               </button>
             )}
-            {/* Hidden file input */}
+
             <input
               ref={fileInputRef}
               type="file"
@@ -284,12 +307,12 @@ export default function ServiceForm({ open, onClose, service }) {
               className="hidden"
               onChange={handleFilePick}
             />
- 
+
             {imgError && (
               <p className="text-red-500 text-xs mt-1">{imgError}</p>
             )}
           </div>
- 
+
           {/* Admin notice */}
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
             <span className="text-amber-500 mt-0.5">⚠️</span>
@@ -299,7 +322,7 @@ export default function ServiceForm({ open, onClose, service }) {
                 : "New services need admin approval before appearing publicly."}
             </p>
           </div>
- 
+
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-1">
             <button
@@ -311,12 +334,10 @@ export default function ServiceForm({ open, onClose, service }) {
             </button>
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || uploading}
               className="px-7 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition disabled:opacity-60 cursor-pointer"
             >
-              {isPending
-                ? "Saving..."
-                : isEdit ? "Update Service" : "Create Service"}
+              {isPending ? "Saving..." : isEdit ? "Update Service" : "Create Service"}
             </button>
           </div>
         </form>

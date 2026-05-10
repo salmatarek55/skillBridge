@@ -399,3 +399,4 @@ C:\Users\sama sayed\OneDrive\Desktop\skillBridge\Backend\obj\Debug\net8.0\refint
 C:\Users\sama sayed\OneDrive\Desktop\skillBridge\Backend\obj\Debug\net8.0\SkillBridge.pdb
 C:\Users\sama sayed\OneDrive\Desktop\skillBridge\Backend\obj\Debug\net8.0\SkillBridge.genruntimeconfig.cache
 C:\Users\sama sayed\OneDrive\Desktop\skillBridge\Backend\obj\Debug\net8.0\ref\SkillBridge.dll
+C:\Users\sama sayed\OneDrive\Desktop\skillBridge\Backend\bin\Debug\net8.0\SkillBridge.staticwebassets.runtime.json

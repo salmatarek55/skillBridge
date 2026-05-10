@@ -12,22 +12,51 @@ const ROLE_MAP = {
   admin:    1,
 };
 export async function loginUser(email, password) {
-  const res = await api.post("/Auth/login", { email, password });
-  const data = res.data.data;
+  try {
+    const res = await api.post("/Auth/login", { email, password });
+    const data = res.data.data;
 
-  const role = normalizeRole(data.role);
-  
-  return {
-    id:       data.id         || data.userId || null,
-    name:     data.fullName   || data.name,
-    email:    data.email,
-    role:     role,
-    approved: role === "provider" 
-      ? (data.status === "Active" || data.status === "Approved" || data.isApproved === true)
-      : true,
-    avatar:   data.avatar || data.profileImage || `https://i.pravatar.cc/150?u=${data.email}`,
-    token:    data.token,
-  };
+    const role = normalizeRole(data.role);
+
+    const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+    const userId =
+      tokenPayload[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+      ];
+
+    return {
+      id: userId || data.id || null,
+      name: data.fullName,
+      email: data.email,
+      role,
+      approved:
+        role === "provider"
+          ? data.status === "Active" || data.status === "Approved"
+          : true,
+      status: data.status, // 👈 مهم جداً
+      token: data.token,
+    };
+  } catch (err) {
+    // 👇 هنا أهم تعديل
+    const message = err?.response?.data?.message;
+
+    if (message?.includes("not approved")) {
+      // نرجع user object partial بدل ما نكسر اللوجين
+      const data = err.response.data.data || {};
+
+      return {
+        id: data.id,
+        name: data.fullName,
+        email,
+        role: "provider",
+        approved: false,
+        status: "Pending",
+        token: null,
+      };
+    }
+
+    throw new Error(message || "Login failed");
+  }
 }
 export async function registerUser(newUser) {
   const res = await api.post("/Auth/register", {

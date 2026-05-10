@@ -159,6 +159,7 @@ if (app.Environment.IsDevelopment())
 // Middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors("AllowFrontend");
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 

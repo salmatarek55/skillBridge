@@ -60,6 +60,7 @@ export default function ServiceCard({ service }) {
       <div className="relative h-40 w-full">
         <img
           src={service.thumbnailUrl || service.images?.[0] || "https://via.placeholder.com/300x200?text=No+Image"}
+            alt={service.title}
           className="w-full h-full object-cover"
         />
 

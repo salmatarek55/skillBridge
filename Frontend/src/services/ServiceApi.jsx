@@ -1,22 +1,49 @@
 import api from "./axiosInstance";
-const normalizeService = (s) => ({
-  serviceId: s.id,
-  title: s.title,
-  description: s.description,
-  category: s.categoryName,
-  categoryId: s.categoryId,
-  price: s.price,
-  rating: s.averageRating || 0,
-  deliveryTime: s.deliveryTimeInDays,
-  provider: {
-    id: s.providerId,
-    name: s.providerName,
-  },
-  images: s.portfolioImageUrls || [],
-  thumbnailUrl: s.thumbnailUrl || s.portfolioImageUrls?.[0], // ← مهم
-  status: s.status?.toLowerCase(),
-  createdAt: s.createdAt,
-});
+
+const normalizeService = (s) => {
+  // الصور
+  const portfolioImages = Array.isArray(s.portfolioImageUrls)
+    ? s.portfolioImageUrls
+    : [];
+
+  // أول صورة متاحة
+  const thumbnail =
+    s.thumbnailUrl ||
+    portfolioImages[0] ||
+    null;
+
+  return {
+    serviceId: s.id,
+
+    title: s.title,
+    description: s.description,
+
+    category: s.categoryName,
+    categoryId: s.categoryId,
+
+    price: s.price,
+
+    rating: s.averageRating || 0,
+
+    deliveryTime: s.deliveryTimeInDays,
+
+    provider: {
+      id: s.providerId,
+      name: s.providerName,
+    },
+
+    // كل الصور
+    images: portfolioImages,
+
+    // صورة الكارد
+    thumbnailUrl: thumbnail,
+
+    status: s.status?.toLowerCase(),
+
+    createdAt: s.createdAt,
+  };
+};
+
 // GET all approved services
 export async function getAllServices() {
   const res = await api.get("/Services");
@@ -43,8 +70,11 @@ export async function createService(data) {
     categoryId: Number(data.categoryId),
     price: Number(data.price),
     deliveryTimeInDays: Number(data.deliveryTime),
+
+    // الصور
     portfolioImageUrls: data.images || [],
   });
+
   return normalizeService(res.data.data);
 }
 
@@ -56,8 +86,11 @@ export async function updateService(serviceId, data) {
     categoryId: Number(data.categoryId),
     price: Number(data.price),
     deliveryTimeInDays: Number(data.deliveryTime),
+
+    // الصور
     portfolioImageUrls: data.images || [],
   });
+
   return normalizeService(res.data.data);
 }
 
@@ -68,19 +101,45 @@ export async function deleteService(serviceId) {
 }
 
 // Filter services
-export async function filterServices({ category, price, rating } = {}) {
+export async function filterServices({
+  category,
+  price,
+  rating,
+} = {}) {
   const res = await api.get("/Services");
+
   let result = res.data.data.map(normalizeService);
-  if (category) result = result.filter((s) => s.category === category);
-  if (price) result = result.filter((s) => s.price <= price);
-  if (rating) result = result.filter((s) => s.rating >= rating);
+
+  if (category) {
+    result = result.filter(
+      (s) => s.category === category
+    );
+  }
+
+  if (price) {
+    result = result.filter(
+      (s) => s.price <= price
+    );
+  }
+
+  if (rating) {
+    result = result.filter(
+      (s) => s.rating >= rating
+    );
+  }
+
   return result;
 }
 
 // Search services
 export async function searchServices(query) {
   const res = await api.get("/Services");
+
   return res.data.data
     .map(normalizeService)
-    .filter((s) => s.title.toLowerCase().includes(query.toLowerCase()));
+    .filter((s) =>
+      s.title
+        .toLowerCase()
+        .includes(query.toLowerCase())
+    );
 }

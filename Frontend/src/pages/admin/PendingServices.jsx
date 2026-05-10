@@ -95,7 +95,6 @@ export default function PendingServices() {
                       {sv.category &&
                         (() => {
                           const cat = getCategoryByName(sv.category);
-
                           return (
                             <span
                               className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border flex items-center gap-1
