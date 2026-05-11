@@ -18,9 +18,6 @@ export default function AccountPending() {
     return;
   }
 
-  // ❌ احذفي redirect بتاع approved من هنا
-  // علشان الصفحة تفضل تظهر طبيعي
-
 }, [user, navigate]);
   const handleLogout = () => {
     logout();

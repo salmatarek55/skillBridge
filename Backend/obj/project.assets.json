@@ -6325,19 +6325,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sama sayed\\.nuget\\packages\\": {}
+    "C:\\Users\\salma\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\SkillBridge.csproj",
+      "projectUniqueName": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\SkillBridge.csproj",
       "projectName": "SkillBridge",
-      "projectPath": "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\SkillBridge.csproj",
-      "packagesPath": "C:\\Users\\sama sayed\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\sama sayed\\OneDrive\\Desktop\\skillBridge\\Backend\\obj\\",
+      "projectPath": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\SkillBridge.csproj",
+      "packagesPath": "C:\\Users\\salma\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\sama sayed\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\salma\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

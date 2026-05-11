@@ -1,77 +1,77 @@
-// socketService.js
-// Real-time messaging via Socket.IO
-// لما يكون عندك backend — غيّر SOCKET_URL
+// src/services/socketService.js
+import * as signalR from "@microsoft/signalr";
 
-import { io } from "socket.io-client";
+const HUB_URL =
+  import.meta.env.VITE_SOCKET_URL || "http://localhost:5242/hubs/chat";
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+let connection = null;
 
-let socket = null;
+export async function connectSocket(userId) {
+  if (connection?.state === signalR.HubConnectionState.Connected) return connection;
 
+  connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${HUB_URL}?userId=${userId}`, {
+      accessTokenFactory: () => {
+        const stored = localStorage.getItem("user");
+        return stored ? JSON.parse(stored)?.token : null;
+      },
+    })
+    .withAutomaticReconnect()
+    .configureLogging(signalR.LogLevel.Warning)
+    .build();
 
-export function connectSocket(userId) {
-  if (socket?.connected) return socket;
+  connection.onreconnecting(() => console.warn("⚡ SignalR reconnecting..."));
+  connection.onreconnected(() => console.log("🟢 SignalR reconnected"));
+  connection.onclose(() => console.log("🔴 SignalR disconnected"));
 
-  socket = io(SOCKET_URL, {
-    query: { userId },
-    transports: ["websocket"],
-    autoConnect: true,
-  });
+  try {
+    await connection.start();
+    console.log("🟢 SignalR connected");
+  } catch (err) {
+    console.error("SignalR connection error:", err);
+  }
 
-  socket.on("connect", () => {
-    console.log("🟢 Socket connected:", socket.id);
-    socket.emit("user:online", userId);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("🔴 Socket disconnected");
-  });
-
-  socket.on("connect_error", (err) => {
-    console.error("Socket connection error:", err.message);
-  });
-
-  return socket;
+  return connection;
 }
 
-export function disconnectSocket() {
-  if (socket) {
-    socket.disconnect();
-    socket = null;
+export async function disconnectSocket() {
+  if (connection) {
+    await connection.stop();
+    connection = null;
   }
 }
 
-export function getSocket() {
-  return socket;
+export function getConnection() {
+  return connection;
 }
 
-
-export function emitMessage({ senderId, receiverId, text }) {
-  if (!socket?.connected) {
-    console.warn("Socket not connected — message not sent via socket");
+export function emitMessage({ requestId, senderId, receiverId, text }) {
+  if (connection?.state !== signalR.HubConnectionState.Connected) {
+    console.warn("SignalR not connected");
     return;
   }
-  socket.emit("message:send", { senderId, receiverId, text });
+  connection
+    .invoke("SendMessage", { requestId, senderId, receiverId, messageText: text })
+    .catch(console.error);
 }
 
-
 export function onMessage(callback) {
-  if (!socket) return;
-  socket.off("message:receive");
-  socket.on("message:receive", callback);
+  if (!connection) return;
+  connection.off("ReceiveMessage");
+  connection.on("ReceiveMessage", callback);
 }
 
 export function emitTyping({ senderId, receiverId }) {
-  socket?.emit("typing:start", { senderId, receiverId });
+  if (connection?.state !== signalR.HubConnectionState.Connected) return;
+  connection.invoke("SendTyping", { senderId, receiverId }).catch(console.error);
 }
 
 export function onTyping(callback) {
-  if (!socket) return;
-  socket.off("typing:start");
-  socket.on("typing:start", callback);
+  if (!connection) return;
+  connection.off("ReceiveTyping");
+  connection.on("ReceiveTyping", callback);
 }
 
-
 export function offEvent(event) {
-  socket?.off(event);
+  connection?.off(event);
 }

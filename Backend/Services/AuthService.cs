@@ -55,24 +55,21 @@ namespace SkillBridge.Services
                 Status = user.Status.ToString()
             };
         }
-
         public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(x => x.Email == dto.Email);
 
-            if (user == null)
-                return null;
+            if (user == null) return null;
 
             var passwordValid = PasswordHasher.Verify(dto.Password, user.PasswordHash);
+            if (!passwordValid) return null;
 
-            if (!passwordValid)
-                return null;
-
-            if (user.Role == UserRole.Provider && 
-                user.Status != UserStatus.Approved && 
-                user.Status != UserStatus.Active)
-                return null;
+            // ← شيل الـ check ده أو عدّله عشان Pending يقدر يعمل Login
+            // if (user.Role == UserRole.Provider && 
+            //     user.Status != UserStatus.Approved && 
+            //     user.Status != UserStatus.Active)
+            //     return null;
 
             var token = _jwtHelper.GenerateToken(user);
 
@@ -82,10 +79,9 @@ namespace SkillBridge.Services
                 FullName = user.FullName,
                 Email = user.Email,
                 Role = user.Role.ToString(),
-                Status = user.Status.ToString()
+                Status = user.Status.ToString() 
             };
         }
-
         public async Task<User?> GetCurrentUserAsync(int userId)
         {
             return await _context.Users

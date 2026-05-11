@@ -7,6 +7,7 @@ import { getProviderServices } from "../../services/ServiceApi";
 import {
   getProviderOrders,
   getProviderRequests,
+  getProviderDashboard,
 } from "../../services/RequestApi";
 
 const QUICK_LINKS = [
@@ -17,7 +18,6 @@ const QUICK_LINKS = [
     bg: "bg-indigo-50",
     border: "border-indigo-100 hover:border-indigo-300",
     text: "text-indigo-700",
-    sub: "text-indigo-400",
   },
   {
     label: "Incoming Requests",
@@ -26,7 +26,6 @@ const QUICK_LINKS = [
     bg: "bg-purple-50",
     border: "border-purple-100 hover:border-purple-300",
     text: "text-purple-700",
-    sub: "text-purple-400",
   },
   {
     label: "Active Orders",
@@ -35,7 +34,6 @@ const QUICK_LINKS = [
     bg: "bg-violet-50",
     border: "border-violet-100 hover:border-violet-300",
     text: "text-violet-700",
-    sub: "text-violet-400",
   },
 ];
 
@@ -50,13 +48,19 @@ export default function Dashboard() {
 
   const { data: orders = [], isError: oErr } = useQuery({
     queryKey: ["providerOrders", user?.id],
-    queryFn: () => getProviderOrders(user.id),
+    queryFn: getProviderOrders,
     enabled: !!user?.id,
   });
 
   const { data: incoming = [], isError: rErr } = useQuery({
     queryKey: ["providerRequests", user?.id],
-    queryFn: () => getProviderRequests(user.id),
+    queryFn: getProviderRequests,
+    enabled: !!user?.id,
+  });
+
+  const { data: dashboardData } = useQuery({
+    queryKey: ["dashboard", user?.id],
+    queryFn: getProviderDashboard,
     enabled: !!user?.id,
   });
 
@@ -64,22 +68,24 @@ export default function Dashboard() {
     if (sErr || oErr || rErr) toast.error("Failed to load dashboard data");
   }, [sErr, oErr, rErr]);
 
-  const activeOrders = orders.filter((o) => o.status === "accepted");
-
-  const completedOrders = orders.filter((o) => o.status === "completed");
-
-  const pendingServices = services.filter((s) => s.status === "pending");
-
-  // Total earnings = sum of price of completed orders
-  const totalEarnings = completedOrders.reduce(
-    (sum, o) => sum + (o.servicePrice || 0),
-    0,
+  const activeOrders = orders.filter(
+    (o) => o.status?.toLowerCase() === "accepted"
   );
+
+  const completedOrders = orders.filter(
+    (o) => o.status?.toLowerCase() === "completed"
+  );
+
+  const pendingServices = services.filter(
+    (s) => s.status?.toLowerCase() === "pending"
+  );
+
+  const totalEarnings = dashboardData?.totalEarnings || 0;
 
   const STATS = [
     {
       label: "Active Orders",
-      value: activeOrders.length,
+      value: dashboardData?.activeOrdersCount ?? activeOrders.length,
       icon: "📦",
       bg: "bg-indigo-50",
       border: "border-indigo-100",
@@ -132,6 +138,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8">
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -36,5 +36,13 @@ namespace SkillBridge.Controllers
             var result = await _messageService.GetConversationAsync(GetUserId(), requestId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+        // GET /api/Messages/unread-count
+[HttpGet("unread-count")]
+public async Task<IActionResult> GetUnreadCount()
+{
+    var result = await _messageService.GetUnreadCountAsync(GetUserId());
+    return result.Success ? Ok(result) : BadRequest(result);
+}
     }
 }

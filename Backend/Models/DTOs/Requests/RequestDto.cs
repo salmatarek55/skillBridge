@@ -5,7 +5,9 @@ namespace SkillBridge.Models.DTOs.Requests
         public int Id { get; set; }
         public int ServiceId { get; set; }
         public string ServiceTitle { get; set; } = string.Empty;
+        public int ClientId { get; set; }        
         public string ClientName { get; set; } = string.Empty;
+        public int ProviderId { get; set; }      
         public string ProviderName { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;

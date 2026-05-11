@@ -1,145 +1,108 @@
 import api from "./axiosInstance";
 
+// ================= NORMALIZE =================
 const normalizeService = (s) => {
-  // الصور
-  const portfolioImages = Array.isArray(s.portfolioImageUrls)
-    ? s.portfolioImageUrls
-    : [];
-
-  // أول صورة متاحة
-  const thumbnail =
-    s.thumbnailUrl ||
-    portfolioImages[0] ||
-    null;
-
   return {
     serviceId: s.id,
 
-    title: s.title,
-    description: s.description,
+    title: s.title || "",
+    description: s.description || "",
 
-    category: s.categoryName,
-    categoryId: s.categoryId,
+    category: s.categoryName || "",
+    categoryId: s.categoryId || null,
 
-    price: s.price,
+    price: s.price || 0,
 
     rating: s.averageRating || 0,
 
-    deliveryTime: s.deliveryTimeInDays,
+    deliveryTime: s.deliveryTimeInDays || 0,
 
     provider: {
       id: s.providerId,
       name: s.providerName,
     },
 
-    // كل الصور
-    images: portfolioImages,
+    images: s.portfolioImageUrls || [],
 
-    // صورة الكارد
-    thumbnailUrl: thumbnail,
+    thumbnailUrl:
+      s.thumbnailUrl ||
+      s.portfolioImageUrls?.[0] ||
+      "",
 
-    status: s.status?.toLowerCase(),
+    status: s.status?.toLowerCase() || "pending",
 
     createdAt: s.createdAt,
   };
 };
 
-// GET all approved services
+// ================= GET ALL =================
 export async function getAllServices() {
   const res = await api.get("/Services");
-  return res.data.data.map(normalizeService);
+
+  const data = res.data?.data || [];
+
+  return data.map(normalizeService);
 }
 
-// GET service by ID
+// ================= GET ONE =================
 export async function getServiceById(id) {
   const res = await api.get(`/Services/${id}`);
+
   return normalizeService(res.data.data);
 }
 
-// GET provider's own services
+// ================= MY SERVICES =================
 export async function getProviderServices() {
   const res = await api.get("/Services/my-services");
-  return res.data.data.map(normalizeService);
+
+  const data = res.data?.data || [];
+
+  return data.map(normalizeService);
 }
 
-// POST create service
-export async function createService(data) {
-  const res = await api.post("/Services", {
-    title: data.title,
-    description: data.description,
-    categoryId: Number(data.categoryId),
-    price: Number(data.price),
-    deliveryTimeInDays: Number(data.deliveryTime),
+// ================= CREATE =================
+export async function createService(payload) {
+  const body = {
+    title: payload.title,
+    description: payload.description,
 
-    // الصور
-    portfolioImageUrls: data.images || [],
-  });
+    categoryId: Number(payload.categoryId),
+
+    price: Number(payload.price),
+
+    deliveryTimeInDays: Number(payload.deliveryTime),
+
+    portfolioImageUrls: payload.images || [],
+  };
+
+  const res = await api.post("/Services", body);
 
   return normalizeService(res.data.data);
 }
 
-// PUT update service
-export async function updateService(serviceId, data) {
-  const res = await api.put(`/Services/${serviceId}`, {
-    title: data.title,
-    description: data.description,
-    categoryId: Number(data.categoryId),
-    price: Number(data.price),
-    deliveryTimeInDays: Number(data.deliveryTime),
+// ================= UPDATE =================
+export async function updateService(serviceId, payload) {
+  const body = {
+    title: payload.title,
+    description: payload.description,
 
-    // الصور
-    portfolioImageUrls: data.images || [],
-  });
+    categoryId: Number(payload.categoryId),
+
+    price: Number(payload.price),
+
+    deliveryTimeInDays: Number(payload.deliveryTime),
+
+    portfolioImageUrls: payload.images || [],
+  };
+
+  const res = await api.put(`/Services/${serviceId}`, body);
 
   return normalizeService(res.data.data);
 }
 
-// DELETE service
+// ================= DELETE =================
 export async function deleteService(serviceId) {
   const res = await api.delete(`/Services/${serviceId}`);
+
   return res.data;
-}
-
-// Filter services
-export async function filterServices({
-  category,
-  price,
-  rating,
-} = {}) {
-  const res = await api.get("/Services");
-
-  let result = res.data.data.map(normalizeService);
-
-  if (category) {
-    result = result.filter(
-      (s) => s.category === category
-    );
-  }
-
-  if (price) {
-    result = result.filter(
-      (s) => s.price <= price
-    );
-  }
-
-  if (rating) {
-    result = result.filter(
-      (s) => s.rating >= rating
-    );
-  }
-
-  return result;
-}
-
-// Search services
-export async function searchServices(query) {
-  const res = await api.get("/Services");
-
-  return res.data.data
-    .map(normalizeService)
-    .filter((s) =>
-      s.title
-        .toLowerCase()
-        .includes(query.toLowerCase())
-    );
 }

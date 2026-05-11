@@ -143,11 +143,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 
 // Seed Database
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await SkillBridge.Data.Seed.DbSeeder.SeedAsync(db);
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     await SkillBridge.Data.Seed.DbSeeder.SeedAsync(db);
+// }
 
 // Swagger
 if (app.Environment.IsDevelopment())

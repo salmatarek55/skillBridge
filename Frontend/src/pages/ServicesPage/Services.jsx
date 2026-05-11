@@ -119,7 +119,7 @@ const filtered = useMemo(() => {
                 All
               </button>
 
-              {[500, 1000, 2000].map((price) => (
+              {[100, 200, 300,400,500].map((price) => (
                 <button
                   key={price}
                   onClick={() => setMaxPrice(price)}

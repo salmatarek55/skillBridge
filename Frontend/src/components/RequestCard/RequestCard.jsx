@@ -30,9 +30,9 @@ export default function RequestCard({request , service, onCancel}) {
     onError: (err) => toast.error(err?.message || "Failed to cancel"),
   });
   ///////////////////////////////////////////////////////////
-  function handleClick(){
-    navigate(`/services/${service.serviceId}`);
-  }
+  // function handleClick(){
+  //   navigate(`/services/${service.serviceId}`);
+  // }
 ///////////////////////////////////////////////
   const handleCancel = (e) => {
     e.stopPropagation();

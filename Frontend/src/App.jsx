@@ -25,6 +25,7 @@ import AccountPending from './pages/provider/AccountPending';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./pages/provider/Dashboard";
 import AllUsers from './pages/admin/AllUsers';
+import CompletedOrders from "./pages/provider/CompletedOrders";
 
 
 const routes = createBrowserRouter([
@@ -56,6 +57,7 @@ const routes = createBrowserRouter([
           { path: "/orders", element: <ProviderOrders /> },
           { path: "/incoming-requests", element: <IncomingRequests /> },
           { path: "/dashboard", element: <Dashboard /> },
+          {  path:"/completed-orders", element:<CompletedOrders /> },
 
         ],
       },
