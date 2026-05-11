@@ -19,13 +19,14 @@ import AdminRoute from "./Routes/AdminRoute";
 import ProtectedRoutes from "./Routes/ProtectedRoutes";
 import Profile from './pages/Profile/Profile';
 import PendingProviders from "./pages/admin/PendingProviders";
-import PendingServices from './pages/admin/PendingServices';
 import IncomingRequests from './pages/provider/IncomingRequests';
 import AccountPending from './pages/provider/AccountPending';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./pages/provider/Dashboard";
 import AllUsers from './pages/admin/AllUsers';
 import CompletedOrders from "./pages/provider/CompletedOrders";
+import ProviderPendingServices from './pages/provider/ProviderPendingServices';
+import PendingServices from './pages/admin/PendingServices';
 
 
 const routes = createBrowserRouter([
@@ -58,6 +59,7 @@ const routes = createBrowserRouter([
           { path: "/incoming-requests", element: <IncomingRequests /> },
           { path: "/dashboard", element: <Dashboard /> },
           {  path:"/completed-orders", element:<CompletedOrders /> },
+          { path: "/pending-services", element: <ProviderPendingServices /> },
 
         ],
       },

@@ -6,18 +6,15 @@ import { AuthContext } from "../../context/AuthContext";
 import { createService, updateService } from "../../services/ServiceApi";
 import { categories } from "../../data/categories";
 import { FaImage } from "react-icons/fa";
-
+import { IoIosWarning } from "react-icons/io";
+import { RxCross2 } from "react-icons/rx";
 export default function ServiceForm({ open, onClose, service }) {
   const { user } = useContext(AuthContext);
-
   const queryClient = useQueryClient();
-
   const isEdit = !!service;
-
   const [images, setImages] = useState([]);
   const [imgError, setImgError] = useState("");
   const [uploading, setUploading] = useState(false);
-
   const fileInputRef = useRef(null);
 
   const {
@@ -63,7 +60,7 @@ export default function ServiceForm({ open, onClose, service }) {
     setImgError("");
   }, [open, service, isEdit, reset]);
 
-  // ================= IMAGE UPLOAD =================
+
   const handleFilePick = async (e) => {
     const files = Array.from(e.target.files);
 
@@ -127,32 +124,25 @@ export default function ServiceForm({ open, onClose, service }) {
     e.target.value = "";
   };
 
-  // ================= REMOVE IMAGE =================
   const removeImage = (idx) => {
     setImages((prev) =>
       prev.filter((_, i) => i !== idx)
     );
   };
 
-  // ================= SUBMIT =================
+
   const { mutate: submit, isPending } = useMutation({
     mutationFn: async (formData) => {
       const payload = {
         title: formData.title,
-
         description: formData.description,
-
         categoryId: Number(formData.categoryId),
-
         price: Number(formData.price),
-
         deliveryTime: Number(
           formData.deliveryTime
         ),
-
         images,
       };
-
       return isEdit
         ? updateService(service.serviceId, payload)
         : createService(payload);
@@ -199,7 +189,7 @@ export default function ServiceForm({ open, onClose, service }) {
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-purple-50 text-purple-400 hover:bg-purple-100 hover:text-purple-700 transition flex items-center justify-center cursor-pointer text-sm"
           >
-            ✕
+            <RxCross2 />
           </button>
         </div>
 
@@ -378,7 +368,7 @@ export default function ServiceForm({ open, onClose, service }) {
                       onClick={() => removeImage(idx)}
                       className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer"
                     >
-                      ✕
+                      <RxCross2 />
                     </button>
                   </div>
                 ))}
@@ -430,7 +420,7 @@ export default function ServiceForm({ open, onClose, service }) {
           {/* Notice */}
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
             <span className="text-amber-500 mt-0.5">
-              ⚠️
+             <IoIosWarning />
             </span>
 
             <p className="text-xs text-amber-700 leading-relaxed">

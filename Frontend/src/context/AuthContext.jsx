@@ -18,7 +18,6 @@ export function AuthContextProvider({ children }) {
     try {
       await logoutUser(); 
     } catch {
-      // مش مشكلة لو فشل
     } finally {
       setUser(null);
       localStorage.removeItem("user");

@@ -40,6 +40,7 @@ export default function ServiceCard({ service }) {
         serviceId: service.serviceId,
         clientId: user.id,
         providerId: service.provider?.id,
+        agreedPrice: service.price, 
       });
       toast.success("Request sent successfully! ✅");
       setTimeout(() => navigate("/my-requests"), 1000);

@@ -44,5 +44,13 @@ public async Task<IActionResult> GetUnreadCount()
     var result = await _messageService.GetUnreadCountAsync(GetUserId());
     return result.Success ? Ok(result) : BadRequest(result);
 }
+
+
+[HttpGet("conversation/{requestId}/unread-count")]
+public async Task<IActionResult> GetConversationUnreadCount(int requestId)
+{
+    var result = await _messageService.GetConversationUnreadCountAsync(GetUserId(), requestId);
+    return result.Success ? Ok(result) : BadRequest(result);
+}
     }
 }

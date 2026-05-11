@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { cancelRequest } from "../../services/RequestApi";
@@ -7,20 +6,31 @@ import { getCategoryByName } from "../../data/categories";
 import toast from "react-hot-toast";
 
 const STATUS_CONFIG = {
-  pending:   { label: "Pending",   cls: "bg-amber-50  text-amber-600  border-amber-200"  },
-  accepted:  { label: "Accepted",  cls: "bg-green-50  text-green-600  border-green-200"  },
-  rejected:  { label: "Rejected",  cls: "bg-red-50    text-red-600    border-red-200"    },
+  pending: { label: "Pending", cls: "bg-amber-50  text-amber-600  border-amber-200" },
+  accepted: { label: "Accepted", cls: "bg-green-50  text-green-600  border-green-200" },
+  rejected: { label: "Rejected", cls: "bg-red-50    text-red-600    border-red-200" },
   completed: { label: "Completed", cls: "bg-purple-50 text-purple-600 border-purple-200" },
 };
 
-export default function RequestCard({request , service, onCancel}) {
-  const navigate =useNavigate();
-   const queryClient  = useQueryClient();
-  const statusCfg = STATUS_CONFIG[request.status] || STATUS_CONFIG.pending;
-  const cat       = getCategoryByName(service?.category);
-  const imgSrc = service?.images?.[0] || service?.provider?.avatar || null;
+const initials = (name = "") =>
+  name.split(" ").filter(Boolean).map((w) => w[0]).join("").toUpperCase().slice(0, 2) || "??";
 
- const { mutate: cancel, isPending: cancelling } = useMutation({
+export default function RequestCard({ request, service, onCancel }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const statusKey = request.status?.toLowerCase();
+  const statusCfg = STATUS_CONFIG[statusKey] || STATUS_CONFIG.pending;
+
+  // ✅ serviceCategory comes from API now as a string e.g. "Backend"
+  const cat = service?.category ? getCategoryByName(service.category) : null;
+
+  // ✅ serviceImage comes directly from API
+  const imgSrc = service?.image || service?.images?.[0] || service?.provider?.avatar || null;
+  // ✅ providerAvatar fallback to initials
+  const providerAvatar = service?.provider?.avatar || null;
+
+  const { mutate: cancel, isPending: cancelling } = useMutation({
     mutationFn: () => cancelRequest(request.id),
     onSuccess: () => {
       toast.success("Request cancelled");
@@ -29,39 +39,43 @@ export default function RequestCard({request , service, onCancel}) {
     },
     onError: (err) => toast.error(err?.message || "Failed to cancel"),
   });
-  ///////////////////////////////////////////////////////////
-  // function handleClick(){
-  //   navigate(`/services/${service.serviceId}`);
-  // }
-///////////////////////////////////////////////
+
   const handleCancel = (e) => {
     e.stopPropagation();
-    if (request.status !== "pending") {
+    if (statusKey !== "pending") {
       toast.error("Only pending requests can be cancelled");
       return;
     }
     cancel();
   };
-   return (
+
+  return (
     <div className="bg-white rounded-2xl border border-purple-100 shadow-[0_2px_16px_rgba(99,102,241,0.08)] p-4 flex flex-col gap-3 hover:shadow-[0_4px_24px_rgba(99,102,241,0.13)] transition-all duration-200">
- 
+
       {/* ── Top row ── */}
       <div className="flex items-start justify-between gap-3">
- 
+
         {/* Image + title */}
         <div className="flex items-center gap-3 min-w-0">
+          {/* ✅ Show serviceImage from API, fallback to providerAvatar, then initials */}
           {imgSrc ? (
             <img
               src={imgSrc}
               alt={service?.title}
               className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-purple-50"
             />
+          ) : providerAvatar ? (
+            <img
+              src={providerAvatar}
+              alt={service?.provider?.name}
+              className="w-12 h-12 rounded-full object-cover flex-shrink-0 border border-purple-50"
+            />
           ) : (
-            <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-2xl flex-shrink-0">
-              {cat.icon}
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              {cat?.icon || initials(service?.provider?.name)}
             </div>
           )}
- 
+
           <div className="min-w-0">
             <h2 className="font-semibold text-sm text-black truncate leading-snug">
               {service?.title || "Unknown Service"}
@@ -71,13 +85,13 @@ export default function RequestCard({request , service, onCancel}) {
             </p>
           </div>
         </div>
- 
+
         {/* Status + cancel */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusCfg.cls}`}>
             {statusCfg.label}
           </span>
-          {request.status === "pending" && (
+          {statusKey === "pending" && (
             <button
               onClick={handleCancel}
               disabled={cancelling}
@@ -89,29 +103,39 @@ export default function RequestCard({request , service, onCancel}) {
           )}
         </div>
       </div>
- 
+
       {/* ── Info row ── */}
       <div className="flex items-center gap-2 flex-wrap">
-        {/* Category badge */}
-        <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${cat.bg} ${cat.color} ${cat.border}`}>
-          {cat.icon} {cat.name}
-        </span>
- 
+        {/* ✅ Category badge — only if cat resolved */}
+        {cat ? (
+          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${cat.bg} ${cat.color} ${cat.border}`}>
+            {cat.icon} {cat.name}
+          </span>
+        ) : service?.category ? (
+          <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full border bg-gray-50 text-gray-600 border-gray-200">
+            {service.category}
+          </span>
+        ) : null}
+
+        {/* ✅ agreedPrice from API */}
         <span className="text-xs text-purple-500 font-semibold">
-          💰 ${service?.price}
+          💰 ${request.agreedPrice ?? service?.price ?? 0}
         </span>
- 
-        {service?.deliveryTime > 0 && (
+
+        {/* ✅ deliveryDays from API */}
+        {(request.deliveryDays ?? service?.deliveryTime) > 0 && (
           <span className="text-xs text-purple-400">
-            ⏱ {service.deliveryTime} days
+            ⏱ {request.deliveryDays ?? service?.deliveryTime} days
           </span>
         )}
- 
+
         <span className="text-xs text-purple-300 ml-auto">
-          {new Date(request.createdAt).toLocaleDateString()}
+          {request.createdAt
+            ? new Date(request.createdAt).toLocaleDateString()
+            : "—"}
         </span>
       </div>
- 
+
       {/* ── Actions ── */}
       <div className="flex gap-2 pt-1 border-t border-purple-50">
         <button
@@ -121,7 +145,7 @@ export default function RequestCard({request , service, onCancel}) {
           <FiExternalLink size={13} />
           View Details
         </button>
- 
+
         <button
           onClick={() => navigate("/messages")}
           className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-purple-200 text-purple-600 text-xs font-semibold hover:bg-purple-50 transition cursor-pointer"

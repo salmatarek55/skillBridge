@@ -41,7 +41,6 @@ export async function loginUser(email, password) {
     const message = err?.response?.data?.message;
 
     if (message?.includes("not approved")) {
-      // نرجع user object partial بدل ما نكسر اللوجين
       const data = err.response.data.data || {};
 
       return {

@@ -1,10 +1,12 @@
-// src/components/ChatWindow/ChatWindow.jsx
+
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { fetchMessages, sendMessage } from "../../services/MessageApi";
 import { emitMessage, onMessage, emitTyping, onTyping } from "../../services/socketService";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { IoMdSend } from "react-icons/io";
+
 
 export default function ChatWindow({ partner, requestId }) {
   const { user }    = useContext(AuthContext);
@@ -20,13 +22,12 @@ export default function ChatWindow({ partner, requestId }) {
     enabled:  !!requestId,
     refetchInterval: 5000,
   });
-
-  // استخرجي الـ partnerId من الرسائل لو مش موجود
+/////////////////////////////////////////////////////
   const resolvedPartnerId =
     partner?.id ??
     msgs.find((m) => m.senderId !== user.id)?.senderId ??
     msgs.find((m) => m.receiverId !== user.id)?.receiverId;
-
+////////////////////////////////////////////////////////
   useEffect(() => {
     onMessage((msg) => {
       if (msg.requestId === requestId) {
@@ -41,11 +42,11 @@ export default function ChatWindow({ partner, requestId }) {
       }
     });
   }, [requestId, resolvedPartnerId]);
-
+///////////////////////////////////////////////////////////////
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs]);
-
+//////////////////////////////////////////////////////////////
   const { mutate: send, isPending } = useMutation({
     mutationFn: () =>
       sendMessage({
@@ -66,7 +67,7 @@ export default function ChatWindow({ partner, requestId }) {
     },
     onError: (err) => toast.error(err.message || "Failed to send message"),
   });
-
+//////////////////////////////////////////////////////////////
   const handleSend = () => {
     if (!text.trim() || isPending || !requestId) return;
     if (!resolvedPartnerId) {
@@ -75,7 +76,7 @@ export default function ChatWindow({ partner, requestId }) {
     }
     send();
   };
-
+////////////////////////////////////////////////////////////////
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -85,7 +86,7 @@ export default function ChatWindow({ partner, requestId }) {
       emitTyping({ senderId: user.id, receiverId: resolvedPartnerId });
     }
   };
-
+/////////////////////////////////////////////////////////////////////
   if (!partner || !requestId) {
     return (
       <div className="flex-1 flex items-center justify-center text-indigo-300 text-sm">
@@ -93,7 +94,7 @@ export default function ChatWindow({ partner, requestId }) {
       </div>
     );
   }
-
+/////////////////////////////////////////////////////////////////
   return (
     <div className="flex flex-col h-full">
 
@@ -119,7 +120,7 @@ export default function ChatWindow({ partner, requestId }) {
       <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">
         {msgs.length === 0 ? (
           <div className="text-center text-indigo-300 text-sm mt-10">
-            No messages yet. Say hello! 👋
+            No messages yet. Say hello! 
           </div>
         ) : (
           msgs.map((m) => {
@@ -134,7 +135,6 @@ export default function ChatWindow({ partner, requestId }) {
         <p>{m.messageText}</p>
 
         <div className="flex items-center justify-end gap-1 mt-1">
-          {/* الوقت */}
           <p className="text-[10px] text-gray-400">
             {new Date(m.createdAt).toLocaleTimeString("en-EG", {
               hour:     "2-digit",
@@ -142,15 +142,11 @@ export default function ChatWindow({ partner, requestId }) {
               timeZone: "Africa/Cairo",
             })}
           </p>
-
-          {/* علامة القراءة — بتاعتي بس */}
           {isMine && (
             <span className="text-[13px] leading-none" title={m.isRead ? "Seen" : "Sent"}>
               {m.isRead ? (
-                // ✓✓ أخضر = اتقرأت
                 <span className="text-green-500">✓✓</span>
               ) : (
-                // ✓✓ رمادي = اتبعتت بس
                 <span className="text-gray-400">✓✓</span>
               )}
             </span>
@@ -178,7 +174,7 @@ export default function ChatWindow({ partner, requestId }) {
           disabled={!text.trim() || isPending}
           className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center hover:opacity-90 transition disabled:opacity-40 cursor-pointer flex-shrink-0"
         >
-          ➤
+          <IoMdSend />
         </button>
       </div>
     </div>

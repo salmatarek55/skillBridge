@@ -1,24 +1,26 @@
 import React, { useContext, useEffect } from "react";
 import { FiClock, FiLogOut } from "react-icons/fi";
+import { FaCheck } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { HiOutlineClock } from "react-icons/hi2";
+import { HiOutlineLockClosed } from "react-icons/hi2";
 
 export default function AccountPending() {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-  if (!user) {
-    navigate("/");
-    return;
-  }
+    if (!user) {
+      navigate("/");
+      return;
+    }
 
-  if (user.role !== "provider") {
-    navigate("/");
-    return;
-  }
-
-}, [user, navigate]);
+    if (user.role !== "provider") {
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -27,7 +29,6 @@ export default function AccountPending() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center">
-
         {/* Icon */}
         <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <FiClock className="text-amber-500 text-2xl" />
@@ -53,7 +54,7 @@ export default function AccountPending() {
         <div className="flex justify-center gap-6 mb-8 text-xs text-gray-400">
           <div className="flex flex-col items-center gap-1">
             <div className="w-7 h-7 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold">
-              ✓
+              <FaCheck />
             </div>
             <span>Registered</span>
           </div>
@@ -61,18 +62,20 @@ export default function AccountPending() {
           <div className="h-px w-8 bg-gray-200 mt-3.5" />
 
           <div className="flex flex-col items-center gap-1">
-            <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center font-bold">
-              ⏳
+            <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center">
+              <HiOutlineClock className="text-sm" />
             </div>
+
             <span>Reviewing</span>
           </div>
 
           <div className="h-px w-8 bg-gray-200 mt-3.5" />
 
           <div className="flex flex-col items-center gap-1">
-            <div className="w-7 h-7 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold">
-              🔒
+            <div className="w-7 h-7 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center">
+              <HiOutlineLockClosed className="text-sm" />
             </div>
+
             <span>Approved</span>
           </div>
         </div>

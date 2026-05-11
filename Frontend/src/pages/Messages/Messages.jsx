@@ -1,73 +1,89 @@
-// src/pages/Messages/Messages.jsx
+
 import { useContext, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../context/AuthContext";
 import { connectSocket, disconnectSocket } from "../../services/socketService";
 import api from "../../services/axiosInstance";
 import ChatWindow from "../../components/ChatWindow/ChatWindow";
+import { FiMessageCircle, FiArrowLeft } from "react-icons/fi";
 
 const initials = (name = "") =>
-  name.split(" ").filter(Boolean).map((w) => w[0]).join("").toUpperCase().slice(0, 2) || "??";
+  name
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2) || "??";
 
 export default function Messages() {
   const { user } = useContext(AuthContext);
-  const [activePartner, setActivePartner]         = useState(null);
-  const [activeRequestId, setActiveRequestId]     = useState(null);
-  const [mobileView, setMobileView]               = useState("list");
-  const [unreadMap, setUnreadMap]                 = useState({}); // { requestId: count }
+
+  const [activePartner, setActivePartner] = useState(null);
+  const [activeRequestId, setActiveRequestId] = useState(null);
+  const [mobileView, setMobileView] = useState("list");
+  const [unreadMap, setUnreadMap] = useState({});
 
   useEffect(() => {
     if (user?.id) connectSocket(user.id);
     return () => disconnectSocket();
   }, [user?.id]);
 
-  // ── جيبي الـ requests ──────────────────────────────────────────
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ["my-requests-messages", user?.id],
-    queryFn:  async () => {
+    queryFn: async () => {
       const res = await api.get("/Requests/my");
       return res.data.data;
     },
     enabled: !!user?.id,
   });
 
-  // ── جيبي الـ unread count لكل request ─────────────────────────
   useEffect(() => {
     if (!requests.length || !user?.id) return;
 
     const fetchUnreads = async () => {
       const map = {};
+
       await Promise.all(
         requests.map(async (req) => {
           try {
-            const res = await api.get(`/Messages/conversation/${req.id}`);
-            const msgs = res.data.data || [];
-            map[req.id] = msgs.filter(
-              (m) => Number(m.receiverId) === Number(user.id) && !m.isRead
-            ).length;
+            const res = await api.get(
+              `/Messages/conversation/${req.id}/unread-count`
+            );
+
+            map[req.id] = res.data.data ?? 0;
           } catch {
             map[req.id] = 0;
           }
         })
       );
+
       setUnreadMap(map);
     };
 
     fetchUnreads();
+
     const interval = setInterval(fetchUnreads, 10000);
+
     return () => clearInterval(interval);
   }, [requests, user?.id]);
 
   const handleSelectRequest = (req) => {
     const isClient = req.clientName === user?.name;
+
     setActivePartner({
-      id:     isClient ? req.providerId : req.clientId,
-      name:   isClient ? req.providerName : req.clientName,
+      id: isClient ? req.providerId : req.clientId,
+      name: isClient ? req.providerName : req.clientName,
       avatar: "",
     });
+
     setActiveRequestId(req.id);
-    // امسحي الـ unread لما تفتح المحادثة
-    setUnreadMap((prev) => ({ ...prev, [req.id]: 0 }));
+
+    setUnreadMap((prev) => ({
+      ...prev,
+      [req.id]: 0,
+    }));
+
     setMobileView("chat");
   };
 
@@ -78,35 +94,52 @@ export default function Messages() {
         style={{ height: "calc(100vh - 140px)", minHeight: "500px" }}
       >
         <div className="flex h-full">
-
-          {/* ── Sidebar ── */}
-          <div className={`w-full sm:w-72 flex-shrink-0 border-r border-purple-50 flex flex-col ${
-            mobileView === "chat" ? "hidden sm:flex" : "flex"
-          }`}>
+          {/* Sidebar */}
+          <div
+            className={`w-full sm:w-72 flex-shrink-0 border-r border-purple-50 flex flex-col ${
+              mobileView === "chat" ? "hidden sm:flex" : "flex"
+            }`}
+          >
             <div className="px-5 py-4 border-b border-purple-50">
               <p className="text-[10px] font-bold tracking-widest text-purple-400 uppercase mb-0.5">
                 Inbox
               </p>
-              <h2 className="text-lg font-bold text-purple-900">Messages</h2>
+
+              <h2 className="text-lg font-bold text-purple-900">
+                Messages
+              </h2>
             </div>
 
             <div className="flex-1 overflow-y-auto">
               {isLoading ? (
                 <div className="space-y-3 p-4">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-16 rounded-xl bg-purple-50/60 animate-pulse" />
+                    <div
+                      key={i}
+                      className="h-16 rounded-xl bg-purple-50/60 animate-pulse"
+                    />
                   ))}
                 </div>
               ) : requests.length === 0 ? (
-                <div className="text-center py-16 px-4">
-                  <p className="text-3xl mb-2">💬</p>
-                  <p className="text-sm text-purple-400">No conversations yet</p>
+                <div className="text-center py-16 px-4 flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-3">
+                    <FiMessageCircle className="text-2xl text-purple-500" />
+                  </div>
+
+                  <p className="text-sm text-purple-400">
+                    No conversations yet
+                  </p>
                 </div>
               ) : (
                 requests.map((req) => {
-                  const isClient    = req.clientName === user?.name;
-                  const partnerName = isClient ? req.providerName : req.clientName;
-                  const unread      = unreadMap[req.id] || 0;
+                  const isClient =
+                    req.clientName === user?.name;
+
+                  const partnerName = isClient
+                    ? req.providerName
+                    : req.clientName;
+
+                  const unread = unreadMap[req.id] || 0;
 
                   return (
                     <button
@@ -127,13 +160,14 @@ export default function Messages() {
                           <p className="text-sm font-semibold text-purple-900 truncate">
                             {partnerName}
                           </p>
-                          {/* ── Unread badge ── */}
+
                           {unread > 0 && (
                             <span className="ml-2 min-w-[20px] h-5 px-1 rounded-full bg-green-500 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
                               {unread > 9 ? "9+" : unread}
                             </span>
                           )}
                         </div>
+
                         <p className="text-xs text-purple-400 truncate mt-0.5">
                           {req.serviceTitle}
                         </p>
@@ -145,21 +179,27 @@ export default function Messages() {
             </div>
           </div>
 
-          {/* ── Chat ── */}
-          <div className={`flex-1 flex flex-col ${
-            mobileView === "list" ? "hidden sm:flex" : "flex"
-          }`}>
+          {/* Chat */}
+          <div
+            className={`flex-1 flex flex-col ${
+              mobileView === "list" ? "hidden sm:flex" : "flex"
+            }`}
+          >
             {mobileView === "chat" && (
               <button
                 onClick={() => setMobileView("list")}
                 className="sm:hidden flex items-center gap-2 px-4 py-3 text-sm text-purple-500 border-b border-purple-50 cursor-pointer"
               >
-                ← Back
+                <FiArrowLeft />
+                Back
               </button>
             )}
-            <ChatWindow partner={activePartner} requestId={activeRequestId} />
-          </div>
 
+            <ChatWindow
+              partner={activePartner}
+              requestId={activeRequestId}
+            />
+          </div>
         </div>
       </div>
     </div>

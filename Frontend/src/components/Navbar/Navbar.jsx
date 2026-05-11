@@ -23,7 +23,7 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  // ── Unread messages count ──────────────────────────────────────
+  ////////////////////////////////////////////////////////
   const { data: unreadCount = 0 } = useQuery({
     queryKey: ["unread-count", user?.id],
     queryFn: async () => {
@@ -33,8 +33,7 @@ export default function Navbar() {
     enabled: !!user?.id,
     refetchInterval: 10000,
   });
-
-  // ── Active link ────────────────────────────────────────────────
+  ////////////////////////////////////////////////////////
   const isActive  = (path) => location.pathname === path;
   const linkClass = (path) =>
     `transition font-medium ${
@@ -42,8 +41,7 @@ export default function Navbar() {
         ? "text-indigo-700"
         : "text-gray-500 hover:text-indigo-700"
     }`;
-
-  // ── Scroll effect ──────────────────────────────────────────────
+  ////////////////////////////////////////////////////////
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -52,14 +50,12 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // ── Close on route change ──────────────────────────────────────
+  ////////////////////////////////////////////////////////
   useEffect(() => {
     setOpenDropdown(false);
     setOpenMenu(false);
   }, [location.pathname]);
-
-  // ── Click outside dropdown ─────────────────────────────────────
+  ////////////////////////////////////////////////////////
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target))
@@ -68,8 +64,7 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // ── Click outside mobile menu ──────────────────────────────────
+  ////////////////////////////////////////////////////////
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target))
@@ -78,7 +73,7 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+  ////////////////////////////////////////////////////////
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${

@@ -4,8 +4,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../context/AuthContext";
 import { getProviderServices, deleteService } from "../../services/ServiceApi";
-
 import ServiceForm from "./ServiceForm";
+import { 
+  FaMoneyBillWave,
+  FaClock,
+  FaTools
+} from "react-icons/fa";
 
 const STATUS_STYLE = {
   approved: "bg-green-50 text-green-600 border-green-200",
@@ -52,6 +56,7 @@ export default function MyServices() {
   return (
     <div className="max-w-6xl mx-auto px-4">
       <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8">
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -79,15 +84,13 @@ export default function MyServices() {
         {isLoading ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="h-80 rounded-3xl bg-indigo-50 animate-pulse"
-              />
+              <div key={i} className="h-80 rounded-3xl bg-indigo-50 animate-pulse" />
             ))}
           </div>
         ) : services.length === 0 ? (
           <div className="text-center py-20 bg-purple-50 border border-purple-100 rounded-3xl">
-            <p className="text-5xl mb-4">💼</p>
+            
+            <FaTools className="text-purple-500 text-5xl mx-auto mb-4" />
 
             <p className="text-purple-500 font-medium text-sm mb-6">
               You haven't created any services yet.
@@ -121,20 +124,22 @@ export default function MyServices() {
                     🛠️
                   </div>
                 )}
+
                 <div className="p-5 flex flex-col flex-1">
-                  <h2 className="text-lg font-bold  mb-2">{sv.title}</h2>
+                  <h2 className="text-lg font-bold mb-2">{sv.title}</h2>
 
                   <p className="text-sm text-gray-500 line-clamp-3 mb-5">
                     {sv.description}
                   </p>
 
                   <div className="flex gap-2 flex-wrap mb-5 text-xs">
-                    <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full">
-                      💰 ${sv.price}
+
+                    <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full flex items-center gap-1">
+                      <FaMoneyBillWave /> ${sv.price}
                     </span>
 
-                    <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full">
-                      ⏱ {sv.deliveryTime}d
+                    <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full flex items-center gap-1">
+                      <FaClock /> {sv.deliveryTime}d
                     </span>
 
                     <span
@@ -142,11 +147,6 @@ export default function MyServices() {
                     >
                       {sv.status}
                     </span>
-                    {sv.status === "pending" && (
-                      <p className="text-[11px] text-amber-500 font-medium">
-                        Waiting for admin approval
-                      </p>
-                    )}
                   </div>
 
                   <div className="flex gap-3 mt-auto">
@@ -189,17 +189,18 @@ export default function MyServices() {
               Do you want to delete this service?
             </p>
 
-            <div className="flex gap-3 justify-content-center items-center">
+            <div className="flex gap-3 justify-center items-center">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="bg-gray-100 text-purple-600 py-2 px-4 rounded-xl cursor-pointer hover:-translate-y-0.5 duration-300 transation-all "
+                className="bg-gray-100 text-purple-600 py-2 px-4 rounded-xl"
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="  bg-red-100 text-red-600 py-2 px-4 rounded-xl cursor-pointer hover:bg-red-200 hover:-translate-y-0.5 duration-300 transation-all disabled:cursor-not-allowed disabled:bg-red-50 disabled:text-red-300"
+                className="bg-red-100 text-red-600 py-2 px-4 rounded-xl disabled:opacity-50"
               >
                 Delete
               </button>

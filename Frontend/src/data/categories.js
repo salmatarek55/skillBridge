@@ -1,8 +1,17 @@
+import {
+  FaPalette,
+  FaLaptopCode,
+  FaServer,
+  FaMagic,
+  FaMobileAlt,
+  FaTools,
+} from "react-icons/fa";
+
 export const categories = [
   {
     id: 1,
     name: "Design",
-    icon: "🎨",
+    icon: FaPalette,
     color: "text-purple-600",
     bg: "bg-purple-50",
     border: "border-purple-200",
@@ -11,7 +20,7 @@ export const categories = [
   {
     id: 2,
     name: "FrontEnd",
-    icon: "💻",
+    icon: FaLaptopCode,
     color: "text-indigo-600",
     bg: "bg-indigo-50",
     border: "border-indigo-200",
@@ -20,7 +29,7 @@ export const categories = [
   {
     id: 3,
     name: "BackEnd",
-    icon: "🛠️",
+    icon: FaServer,
     color: "text-cyan-600",
     bg: "bg-cyan-50",
     border: "border-cyan-200",
@@ -29,7 +38,7 @@ export const categories = [
   {
     id: 4,
     name: "UI UX",
-    icon: "✨",
+    icon: FaMagic,
     color: "text-pink-600",
     bg: "bg-pink-50",
     border: "border-pink-200",
@@ -38,7 +47,7 @@ export const categories = [
   {
     id: 5,
     name: "Mobile",
-    icon: "📱",
+    icon: FaMobileAlt,
     color: "text-emerald-600",
     bg: "bg-emerald-50",
     border: "border-emerald-200",
@@ -48,7 +57,7 @@ export const categories = [
 export const getCategoryByName = (name) =>
   categories.find((c) => c.name === name) || {
     name,
-    icon: "🔧",
+    icon: FaTools,
     color: "text-gray-600",
     bg: "bg-gray-50",
     border: "border-gray-200",

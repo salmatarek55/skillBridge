@@ -103,5 +103,16 @@ namespace SkillBridge.Services
 
     return ApiResponse<int>.Ok(count);
 }
+
+public async Task<ApiResponse<int>> GetConversationUnreadCountAsync(int userId, int requestId)
+{
+    var count = await _db.Messages
+        .Where(m => m.RequestId == requestId 
+                 && m.ReceiverId == userId 
+                 && !m.IsRead)
+        .CountAsync();
+
+    return ApiResponse<int>.Ok(count);
+}
     }
 }

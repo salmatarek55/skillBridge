@@ -48,7 +48,6 @@ export default function Login() {
       if (loggedUser.role === "admin") {
         navigate("/admin/dashboard");
       } else if (loggedUser.role === "provider") {
-        // لو وصل هنا يبقى أكيد approved
         navigate("/dashboard");
       } else {
         navigate("/services");
