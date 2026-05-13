@@ -10,3 +10,4 @@ namespace SkillBridge.Models.DTOs.Ratings
         public DateTime CreatedAt { get; set; }
     }
 }
+

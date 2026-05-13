@@ -30,18 +30,18 @@ export default function CompletedOrders() {
     queryFn: getProviderOrders,
     enabled: !!user?.id,
   });
-
+///////////////////////////////////////
   useEffect(() => {
     if (isError) toast.error("Failed to load completed orders");
   }, [isError]);
-
+///////////////////////////////////////
   const completedOrders = orders.filter((o) => o.status === "completed");
-
+///////////////////////////////////////
   const totalEarnings = completedOrders.reduce(
     (sum, o) => sum + (o.agreedPrice ?? o.servicePrice ?? 0),
     0
   );
-
+///////////////////////////////////////
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8">

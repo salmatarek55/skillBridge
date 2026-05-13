@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../context/AuthContext";
+import { HiStar } from "react-icons/hi2";
 import {
   getClientRequests,
   cancelRequest,
@@ -26,54 +27,42 @@ export default function MyRequests() {
   const [activeTab, setActiveTab] = useState("all");
   const [ratingModal, setRatingModal] = useState(null);
   const [ratingValue, setRatingValue] = useState(0);
-  //////////////////////////////
+  const [reviewText, setReviewText] = useState("");
+
   const {
     data: requests = [],
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["clientRequests", user?.id],
-
     queryFn: getClientRequests,
-
     enabled: !!user?.id,
   });
-  //////////////////////////////
+  ///////////////////////////////////////////
   const { mutate: cancel } = useMutation({
     mutationFn: (id) => cancelRequest(id),
     onSuccess: () => {
       toast.success("Request cancelled");
-
-      queryClient.invalidateQueries({
-        queryKey: ["clientRequests"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["my-requests-messages"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["clientRequests", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["my-requests-messages"] });
     },
-
     onError: () => toast.error("Failed to cancel request"),
   });
-  //////////////////////////////
+  /////////////////////////////////////////////
   const { mutate: submitRating, isPending: rating } = useMutation({
-    mutationFn: ({ requestId, stars }) => rateService(requestId, stars),
-
+    mutationFn: ({ requestId, stars }) =>
+      rateService(requestId, stars, reviewText),
     onSuccess: () => {
       toast.success("Rating submitted ⭐");
-
-      queryClient.invalidateQueries({
-        queryKey: ["clientRequests", user?.id],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["clientRequests", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["serviceRatings"] });
       setRatingModal(null);
-
       setRatingValue(0);
+      setReviewText("");
     },
-
     onError: () => toast.error("Failed to submit rating"),
   });
-  //////////////////////////////
+  ///////////////////////////////////////////////////////
   if (!user) {
     return (
       <div className="flex justify-center items-center min-h-[60vh] px-4">
@@ -81,15 +70,12 @@ export default function MyRequests() {
           <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-100 flex items-center justify-center mb-4">
             <HiOutlineLockClosed className="text-4xl text-indigo-500" />
           </div>
-
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             Login Required
           </h2>
-
           <p className="text-gray-500 text-sm mb-6">
             Please login first to view your requests
           </p>
-
           <Link
             to="/login"
             className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-3 rounded-xl transition"
@@ -100,7 +86,7 @@ export default function MyRequests() {
       </div>
     );
   }
-
+  /////////////////////////////////////////////////////////////
   if (user.role !== "client") {
     return (
       <div className="flex justify-center items-center min-h-[60vh] px-4">
@@ -108,15 +94,12 @@ export default function MyRequests() {
           <div className="w-16 h-16 mx-auto rounded-2xl bg-red-100 flex items-center justify-center mb-4">
             <HiOutlineNoSymbol className="text-4xl text-red-500" />
           </div>
-
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             Access Denied
           </h2>
-
           <p className="text-gray-500 text-sm mb-6">
             Only clients can access this page
           </p>
-
           <Link
             to="/"
             className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-6 py-3 rounded-xl transition"
@@ -128,44 +111,41 @@ export default function MyRequests() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading)
     return (
       <div className="flex justify-center py-24">
         <LoadingSpinner />
       </div>
     );
-  }
-
-  if (isError) {
+  if (isError)
     return (
       <p className="text-center text-red-500 py-20">Failed to load requests</p>
     );
-  }
 
   const filtered =
     activeTab === "all"
-      ? requests
+      ? requests.filter((r) => r.status !== "cancelled")
       : requests.filter((r) => r.status === activeTab);
 
   return (
     <div className="max-w-4xl mx-auto px-4">
+      {/* Header */}
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8 mb-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">
               Client Panel
             </p>
-
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-purple-400 to-purple-700 bg-clip-text text-transparent">
               My Requests
             </h1>
           </div>
-
           <span className="text-xs px-4 py-1.5 rounded-full bg-purple-100 border border-purple-200 text-purple-600 font-semibold">
             {requests.length} Total
           </span>
         </div>
 
+        {/* Tabs */}
         <div className="flex gap-1 flex-wrap bg-indigo-50 p-1 rounded-xl border border-indigo-100 w-fit">
           {STATUS_TABS.map((tab) => (
             <button
@@ -183,25 +163,22 @@ export default function MyRequests() {
         </div>
       </div>
 
+      {/* Empty */}
       {filtered.length === 0 ? (
         <div className="flex justify-center items-center min-h-[50vh] px-4">
           <div className="bg-white border border-indigo-100 rounded-[28px] shadow-[0_10px_40px_rgba(99,102,241,0.08)] p-10 text-center max-w-lg w-full relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full blur-3xl opacity-50" />
-
             <div className="relative z-10">
               <div className="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center shadow-inner mb-6">
                 <HiOutlineInbox className="text-5xl text-purple-400" />
               </div>
-
               <h2 className="text-3xl font-bold text-purple-400 mb-3">
                 No Requests Yet
               </h2>
-
               <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
                 You haven't requested any services yet. Start exploring and find
                 the perfect service.
               </p>
-
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
                   to="/services"
@@ -209,7 +186,6 @@ export default function MyRequests() {
                 >
                   Explore Services
                 </Link>
-
                 <Link
                   to="/"
                   className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-6 py-3 rounded-xl transition"
@@ -241,12 +217,13 @@ export default function MyRequests() {
                 onCancel={() => cancel(req.id)}
               />
 
+              {/* Rate button */}
               {req.status === "completed" && !req.rating && (
                 <button
                   onClick={() => {
                     setRatingModal(req);
-
                     setRatingValue(0);
+                    setReviewText("");
                   }}
                   className="mt-2 w-full py-2 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-700 text-xs font-semibold hover:bg-yellow-100 transition cursor-pointer"
                 >
@@ -262,7 +239,6 @@ export default function MyRequests() {
                   <span className="text-xs text-yellow-600 font-medium">
                     Your rating:
                   </span>
-
                   <StarRating value={req.rating} />
                 </div>
               )}
@@ -271,47 +247,55 @@ export default function MyRequests() {
         </div>
       )}
 
+      {/* Rating Modal */}
       {ratingModal && (
         <div className="fixed inset-0 bg-indigo-900/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(99,102,241,0.18)] border border-indigo-100 p-7 w-full max-w-sm text-center">
             <div className="w-14 h-14 mx-auto rounded-2xl bg-yellow-100 flex items-center justify-center mb-3">
               <HiOutlineStar className="text-3xl text-yellow-500" />
             </div>
-
             <h3 className="text-lg font-bold text-indigo-900 mb-1">
               Rate this service
             </h3>
-
-            <p className="text-sm text-indigo-400 mb-5 truncate">
+            <p className="text-sm text-indigo-400 mb-4 truncate">
               {ratingModal.serviceTitle}
             </p>
 
-            <div className="flex justify-center gap-2 mb-6">
+            {/* Stars */}
+            <div className="flex justify-center gap-2 mb-4">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   onClick={() => setRatingValue(star)}
-                  className={`text-3xl transition cursor-pointer ${
+                  className={`transition cursor-pointer ${
                     star <= ratingValue ? "text-yellow-400" : "text-gray-200"
                   }`}
                 >
-                  ★
+                  <HiStar className="text-3xl" />
                 </button>
               ))}
             </div>
+
+            {/* Review Text */}
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Write your review (optional)..."
+              rows={3}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 outline-none focus:border-purple-300 resize-none mb-4 text-left"
+            />
 
             <div className="flex justify-center gap-3">
               <button
                 onClick={() => {
                   setRatingModal(null);
-
                   setRatingValue(0);
+                  setReviewText("");
                 }}
                 className="px-5 py-2 text-sm font-semibold text-indigo-400 hover:text-indigo-700 transition cursor-pointer"
               >
                 Cancel
               </button>
-
               <button
                 disabled={ratingValue === 0 || rating}
                 onClick={() =>

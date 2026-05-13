@@ -1,6 +1,4 @@
 import api from "./axiosInstance";
-
-
 const normalizeRole = (role) => {
   if (!role) return "client";
   return role.toLowerCase(); 
@@ -11,11 +9,11 @@ const ROLE_MAP = {
   provider: 2,
   admin:    1,
 };
+/////////////////////////////////////////////
 export async function loginUser(email, password) {
   try {
     const res = await api.post("/Auth/login", { email, password });
     const data = res.data.data;
-
     const role = normalizeRole(data.role);
 
     const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
@@ -33,16 +31,14 @@ export async function loginUser(email, password) {
         role === "provider"
           ? data.status === "Active" || data.status === "Approved"
           : true,
-      status: data.status, // 👈 مهم جداً
+      status: data.status,
       token: data.token,
     };
   } catch (err) {
-    // 👇 هنا أهم تعديل
     const message = err?.response?.data?.message;
 
     if (message?.includes("not approved")) {
       const data = err.response.data.data || {};
-
       return {
         id: data.id,
         name: data.fullName,
@@ -57,6 +53,7 @@ export async function loginUser(email, password) {
     throw new Error(message || "Login failed");
   }
 }
+///////////////////////////////////////////////////////////////
 export async function registerUser(newUser) {
   const res = await api.post("/Auth/register", {
     fullName: newUser.name,
@@ -78,7 +75,7 @@ export async function registerUser(newUser) {
     token:    data.token    || data.accessToken || null,
   };
 }
-
+//////////////////////////////////////////////////
 export async function logoutUser() {
   try {
     await api.post("/Auth/logout");

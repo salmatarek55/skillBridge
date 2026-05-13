@@ -13,7 +13,7 @@ export function AuthContextProvider({ children }) {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
-
+/////////////////////////////////////
   const logout = async () => {
     try {
       await logoutUser(); 

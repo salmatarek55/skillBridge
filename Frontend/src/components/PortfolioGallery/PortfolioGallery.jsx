@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function PortfolioGallery({ images = [] }) {
   const [active, setActive]   = useState(0);
@@ -7,14 +8,13 @@ export default function PortfolioGallery({ images = [] }) {
   if (!images.length) {
     return (
       <div className="w-full h-52 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center text-4xl">
-        🖼️
+        <FaImage />
       </div>
     );
   }
 
   return (
     <div>
-      {/* Main image */}
       <div
         className="relative w-full rounded-2xl overflow-hidden cursor-zoom-in mb-3"
         style={{ height: "280px" }}
@@ -31,8 +31,6 @@ export default function PortfolioGallery({ images = [] }) {
           </span>
         )}
       </div>
-
-      {/* Thumbnails */}
       {images.length > 1 && (
         <div className="flex gap-2 flex-wrap">
           {images.map((img, idx) => (
@@ -48,8 +46,6 @@ export default function PortfolioGallery({ images = [] }) {
           ))}
         </div>
       )}
-
-      {/* Lightbox */}
       {lightbox && (
         <div
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
@@ -69,13 +65,13 @@ export default function PortfolioGallery({ images = [] }) {
                   onClick={() => setActive((prev) => (prev - 1 + images.length) % images.length)}
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition cursor-pointer"
                 >
-                  ‹
+                  <FaChevronLeft />
                 </button>
                 <button
                   onClick={() => setActive((prev) => (prev + 1) % images.length)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition cursor-pointer"
                 >
-                  ›
+                  <FaChevronRight />
                 </button>
               </>
             )}
@@ -84,7 +80,7 @@ export default function PortfolioGallery({ images = [] }) {
               onClick={() => setLightbox(false)}
               className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition cursor-pointer text-sm"
             >
-              ✕
+             <FaTimes />
             </button>
           </div>
         </div>

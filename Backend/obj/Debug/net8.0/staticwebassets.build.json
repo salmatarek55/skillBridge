@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "rE5KG9w6DGz6DGu21/20W0IU7rOpXEsBfCHThCBT4js=",
+  "Hash": "C6HE996I7nSJgF7u4H2qOlrrFph7gvOgFZePT8FFlVA=",
   "Source": "SkillBridge",
   "BasePath": "_content/SkillBridge",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\a0ebaa93-7cb9-488e-a84a-5b69809ff410.jpg",
+      "SourceId": "SkillBridge",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\",
+      "BasePath": "_content/SkillBridge",
+      "RelativePath": "uploads/services/a0ebaa93-7cb9-488e-a84a-5b69809ff410.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\services\\a0ebaa93-7cb9-488e-a84a-5b69809ff410.jpg"
+    },
     {
       "Identity": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\a2b299df-1610-4d43-ae3d-db6042767ac7.jpg",
       "SourceId": "SkillBridge",
@@ -34,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\services\\a2b299df-1610-4d43-ae3d-db6042767ac7.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\a9449820-96b6-408c-bf3d-0c9776f1b398.jpeg",
+      "SourceId": "SkillBridge",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\",
+      "BasePath": "_content/SkillBridge",
+      "RelativePath": "uploads/services/a9449820-96b6-408c-bf3d-0c9776f1b398.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\services\\a9449820-96b6-408c-bf3d-0c9776f1b398.jpeg"
     },
     {
       "Identity": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\b0e61cc4-51a5-49bd-b17c-f5503d9aab65.jpg",

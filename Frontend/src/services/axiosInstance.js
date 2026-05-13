@@ -5,7 +5,7 @@ const api = axios.create({
     import.meta.env.VITE_API_URL ||
     "http://localhost:5242/api",
 });
-
+/////////////////////////////////////////
 api.interceptors.request.use((config) => {
   const stored = localStorage.getItem("user");
 
@@ -20,7 +20,7 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
-
+/////////////////////////////////////////
 api.interceptors.response.use(
   (res) => res,
 

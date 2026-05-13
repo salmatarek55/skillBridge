@@ -1,4 +1,4 @@
-// src/services/socketService.js
+
 import * as signalR from "@microsoft/signalr";
 
 const HUB_URL =
@@ -20,31 +20,31 @@ export async function connectSocket(userId) {
     .configureLogging(signalR.LogLevel.Warning)
     .build();
 
-  connection.onreconnecting(() => console.warn("⚡ SignalR reconnecting..."));
-  connection.onreconnected(() => console.log("🟢 SignalR reconnected"));
-  connection.onclose(() => console.log("🔴 SignalR disconnected"));
+  connection.onreconnecting(() => console.warn("SignalR reconnecting..."));
+  connection.onreconnected(() => console.log("SignalR reconnected"));
+  connection.onclose(() => console.log("SignalR disconnected"));
 
   try {
     await connection.start();
-    console.log("🟢 SignalR connected");
+    console.log("SignalR connected");
   } catch (err) {
     console.error("SignalR connection error:", err);
   }
 
   return connection;
 }
-
+/////////////////////////////////////////////////////
 export async function disconnectSocket() {
   if (connection) {
     await connection.stop();
     connection = null;
   }
 }
-
+/////////////////////////////////////////////////////
 export function getConnection() {
   return connection;
 }
-
+/////////////////////////////////////////////////////
 export function emitMessage({ requestId, senderId, receiverId, text }) {
   if (connection?.state !== signalR.HubConnectionState.Connected) {
     console.warn("SignalR not connected");
@@ -54,24 +54,24 @@ export function emitMessage({ requestId, senderId, receiverId, text }) {
     .invoke("SendMessage", { requestId, senderId, receiverId, messageText: text })
     .catch(console.error);
 }
-
+/////////////////////////////////////////////////////
 export function onMessage(callback) {
   if (!connection) return;
   connection.off("ReceiveMessage");
   connection.on("ReceiveMessage", callback);
 }
-
+/////////////////////////////////////////////////////
 export function emitTyping({ senderId, receiverId }) {
   if (connection?.state !== signalR.HubConnectionState.Connected) return;
   connection.invoke("SendTyping", { senderId, receiverId }).catch(console.error);
 }
-
+/////////////////////////////////////////////////////
 export function onTyping(callback) {
   if (!connection) return;
   connection.off("ReceiveTyping");
   connection.on("ReceiveTyping", callback);
 }
-
+/////////////////////////////////////////////////////
 export function offEvent(event) {
   connection?.off(event);
 }

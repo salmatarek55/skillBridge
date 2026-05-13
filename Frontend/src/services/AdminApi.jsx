@@ -1,6 +1,5 @@
 import api from "./axiosInstance";
 
-// ── Dashboard Stats ───────────────────────────────────────────────────
 export const getAdminStats = async () => {
   const [providersRes, servicesRes] = await Promise.all([
     api.get("/Admin/pending-providers"),
@@ -17,13 +16,9 @@ export const getAdminStats = async () => {
     },
   };
 };
-
-// ── Providers ─────────────────────────────────────────────────────────
-
+/////////////////////////////////////////////////////////////////
 export const getPendingProviders = async () => {
   const res = await api.get("/Admin/pending-providers");
-
-  // normalize — الـ backend بيرجع { id, fullName, email, role, status, createdAt }
   const data = res.data.data.map((p) => ({
     id:     p.id,
     name:   p.fullName,
@@ -35,7 +30,7 @@ export const getPendingProviders = async () => {
 
   return { data: { success: true, data } };
 };
-
+//////////////////////////////////////////////////
 export const reviewProvider = async (id, approve) => {
   const endpoint = approve
     ? `/Admin/approve-provider/${id}`
@@ -44,13 +39,9 @@ export const reviewProvider = async (id, approve) => {
   const res = await api.patch(endpoint);
   return { data: { success: true, data: res.data.data } };
 };
-
-// ── Services ──────────────────────────────────────────────────────────
-
+///////////////////////////////////////////////////////////////
 export const getPendingServices = async () => {
   const res = await api.get("/Admin/pending-services");
-
-  // normalize — الـ backend بيرجع deliveryTimeInDays مش deliveryTime
   const data = res.data.data.map((s) => ({
     id:           s.serviceId,
     serviceId:    s.serviceId,
@@ -69,7 +60,7 @@ export const getPendingServices = async () => {
 
   return { data: { success: true, data } };
 };
-
+////////////////////////////////////////////////////
 export const reviewService = async (id, approve) => {
   const endpoint = approve
     ? `/Admin/approve-service/${id}`
@@ -78,13 +69,9 @@ export const reviewService = async (id, approve) => {
   const res = await api.patch(endpoint);
   return { data: { success: true, data: res.data.data } };
 };
-
-// ── All Users ─────────────────────────────────────────────────────────
-
+///////////////////////////////////////////
 export const getAllUsers = async () => {
   const res = await api.get("/Admin/users");
-
-  // normalize + فلتر الـ admin
   const data = res.data.data
     .filter((u) => u.role?.toLowerCase() !== "admin")
     .map((u) => ({

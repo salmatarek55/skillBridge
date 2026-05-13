@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -8,10 +8,12 @@ import { categories } from "../../data/categories";
 import { FaImage } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+
 export default function ServiceForm({ open, onClose, service }) {
   const { user } = useContext(AuthContext);
   const queryClient = useQueryClient();
   const isEdit = !!service;
+
   const [images, setImages] = useState([]);
   const [imgError, setImgError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -31,89 +33,53 @@ export default function ServiceForm({ open, onClose, service }) {
       deliveryTime: "",
     },
   });
-
+/////////////////////////////////////////////////////////////
   useEffect(() => {
-    if (!open) return;
-
-    if (isEdit && service) {
+    if (open) {
       reset({
-        title: service.title,
-        description: service.description,
-        categoryId: service.categoryId,
-        price: service.price,
-        deliveryTime: service.deliveryTime,
+        title: service?.title || "",
+        description: service?.description || "",
+        categoryId: service?.categoryId || "",
+        price: service?.price || "",
+        deliveryTime: service?.deliveryTime || "",
       });
-
-      setImages(service.images || []);
-    } else {
-      reset({
-        title: "",
-        description: "",
-        categoryId: "",
-        price: "",
-        deliveryTime: "",
-      });
-
-      setImages([]);
+      setImages(service?.images || []);
+      setImgError("");
     }
-
-    setImgError("");
-  }, [open, service, isEdit, reset]);
-
-
+  }, [open, service, reset]);
+//////////////////////////////////////////
   const handleFilePick = async (e) => {
     const files = Array.from(e.target.files);
-
     if (!files.length) return;
 
     const remaining = 4 - images.length;
-
     if (remaining <= 0) {
       setImgError("Maximum 4 images allowed");
       return;
     }
 
     const allowedFiles = files.slice(0, remaining);
-
     setUploading(true);
     setImgError("");
 
     try {
       const uploadedUrls = [];
-
       for (const file of allowedFiles) {
         const formData = new FormData();
-
         formData.append("file", file);
-
-        const token =
-          JSON.parse(localStorage.getItem("user"))
-            ?.token;
-
-        const response = await fetch(
-          "http://localhost:5242/api/Upload/image",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          }
-        );
-
+        const token = JSON.parse(localStorage.getItem("user"))?.token;
+        const response = await fetch("http://localhost:5242/api/Upload/image", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
         const data = await response.json();
-
         if (!response.ok || !data.success) {
-          throw new Error(
-            data.message || "Image upload failed"
-          );
+          throw new Error(data.message || "Image upload failed");
         }
-
         uploadedUrls.push(data.url);
       }
-
       setImages((prev) => [...prev, ...uploadedUrls]);
-
       toast.success("Images uploaded successfully ✅");
     } catch (err) {
       toast.error(err.message || "Upload failed");
@@ -125,11 +91,8 @@ export default function ServiceForm({ open, onClose, service }) {
   };
 
   const removeImage = (idx) => {
-    setImages((prev) =>
-      prev.filter((_, i) => i !== idx)
-    );
+    setImages((prev) => prev.filter((_, i) => i !== idx));
   };
-
 
   const { mutate: submit, isPending } = useMutation({
     mutationFn: async (formData) => {
@@ -138,35 +101,25 @@ export default function ServiceForm({ open, onClose, service }) {
         description: formData.description,
         categoryId: Number(formData.categoryId),
         price: Number(formData.price),
-        deliveryTime: Number(
-          formData.deliveryTime
-        ),
+        deliveryTime: Number(formData.deliveryTime),
         images,
       };
       return isEdit
         ? updateService(service.serviceId, payload)
         : createService(payload);
     },
-
     onSuccess: () => {
       toast.success(
-        isEdit
-          ? "Service updated successfully ✅"
-          : "Service created successfully ✅"
+        isEdit ? "Service updated successfully ✅" : "Service created successfully ✅"
       );
-
-      queryClient.invalidateQueries({
-        queryKey: ["providerServices", user?.id],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["providerServices", user?.id] });
       onClose();
     },
-
     onError: (err) => {
       toast.error(err.message || "Something went wrong");
     },
   });
-
+///////////////////////////////////////////////////
   if (!open) return null;
 
   return (
@@ -179,12 +132,10 @@ export default function ServiceForm({ open, onClose, service }) {
             <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-0.5">
               Provider Panel
             </p>
-
             <h2 className="text-lg font-bold text-purple-500">
               {isEdit ? "Edit Service" : "New Service"}
             </h2>
           </div>
-
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-purple-50 text-purple-400 hover:bg-purple-100 hover:text-purple-700 transition flex items-center justify-center cursor-pointer text-sm"
@@ -194,33 +145,23 @@ export default function ServiceForm({ open, onClose, service }) {
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit(submit)}
-          className="p-6 flex flex-col gap-5"
-        >
+        <form onSubmit={handleSubmit(submit)} className="p-6 flex flex-col gap-5">
 
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-purple-800 mb-1.5">
               Service Title
             </label>
-
             <input
               placeholder="e.g. React Frontend Development"
               className="w-full bg-purple-50 border border-purple-200 focus:border-purple-400 rounded-xl px-4 py-2.5 text-sm text-purple-900 placeholder:text-purple-300 outline-none transition"
               {...register("title", {
                 required: "Title is required",
-                minLength: {
-                  value: 5,
-                  message: "Min 5 characters",
-                },
+                minLength: { value: 5, message: "Min 5 characters" },
               })}
             />
-
             {errors.title && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.title.message}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
             )}
           </div>
 
@@ -229,24 +170,17 @@ export default function ServiceForm({ open, onClose, service }) {
             <label className="block text-sm font-medium text-purple-800 mb-1.5">
               Description
             </label>
-
             <textarea
               rows={3}
               placeholder="Describe what you offer..."
               className="w-full bg-purple-50 border border-purple-200 focus:border-purple-400 rounded-xl px-4 py-2.5 text-sm text-purple-900 placeholder:text-purple-300 outline-none transition resize-none"
               {...register("description", {
                 required: "Description is required",
-                minLength: {
-                  value: 20,
-                  message: "Min 20 characters",
-                },
+                minLength: { value: 20, message: "Min 20 characters" },
               })}
             />
-
             {errors.description && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.description.message}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
             )}
           </div>
 
@@ -258,26 +192,20 @@ export default function ServiceForm({ open, onClose, service }) {
               <label className="block text-sm font-medium text-purple-800 mb-1.5">
                 Category
               </label>
-
               <select
                 className="w-full bg-purple-50 border border-purple-200 focus:border-purple-400 rounded-xl px-3 py-2.5 text-sm text-purple-900 outline-none transition"
-                {...register("categoryId", {
-                  required: "Required",
-                })}
+                {...register("categoryId", { required: "Required" })}
               >
-                <option value="">
-                  Select
-                </option>
-
+                <option value="">Select</option>
                 {categories.map((c) => (
-                  <option
-                    key={c.id}
-                    value={c.id}
-                  >
+                  <option key={c.id} value={c.id}>
                     {c.icon} {c.name}
                   </option>
                 ))}
               </select>
+              {errors.categoryId && (
+                <p className="text-red-500 text-xs mt-1">{errors.categoryId.message}</p>
+              )}
             </div>
 
             {/* PRICE */}
@@ -285,7 +213,6 @@ export default function ServiceForm({ open, onClose, service }) {
               <label className="block text-sm font-medium text-purple-800 mb-1.5">
                 Price ($)
               </label>
-
               <input
                 type="number"
                 min={1}
@@ -293,17 +220,11 @@ export default function ServiceForm({ open, onClose, service }) {
                 className="w-full bg-purple-50 border border-purple-200 focus:border-purple-400 rounded-xl px-3 py-2.5 text-sm text-purple-900 placeholder:text-purple-300 outline-none transition"
                 {...register("price", {
                   required: "Required",
-                  min: {
-                    value: 1,
-                    message: "Min $1",
-                  },
+                  min: { value: 1, message: "Min $1" },
                 })}
               />
-
               {errors.price && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.price.message}
-                </p>
+                <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
               )}
             </div>
 
@@ -312,7 +233,6 @@ export default function ServiceForm({ open, onClose, service }) {
               <label className="block text-sm font-medium text-purple-800 mb-1.5">
                 Delivery (days)
               </label>
-
               <input
                 type="number"
                 min={1}
@@ -320,17 +240,11 @@ export default function ServiceForm({ open, onClose, service }) {
                 className="w-full bg-purple-50 border border-purple-200 focus:border-purple-400 rounded-xl px-3 py-2.5 text-sm text-purple-900 placeholder:text-purple-300 outline-none transition"
                 {...register("deliveryTime", {
                   required: "Required",
-                  min: {
-                    value: 1,
-                    message: "Min 1 day",
-                  },
+                  min: { value: 1, message: "Min 1 day" },
                 })}
               />
-
               {errors.deliveryTime && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.deliveryTime.message}
-                </p>
+                <p className="text-red-500 text-xs mt-1">{errors.deliveryTime.message}</p>
               )}
             </div>
 
@@ -338,31 +252,22 @@ export default function ServiceForm({ open, onClose, service }) {
 
           {/* Images */}
           <div>
-
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-purple-800">
                 Portfolio Images
               </label>
-
-              <span className="text-xs text-purple-300">
-                {images.length} / 4
-              </span>
+              <span className="text-xs text-purple-300">{images.length} / 4</span>
             </div>
 
-            {/* Preview */}
             {images.length > 0 && (
               <div className="grid grid-cols-4 gap-2 mb-3">
                 {images.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="relative group aspect-square"
-                  >
+                  <div key={idx} className="relative group aspect-square">
                     <img
                       src={img}
                       alt=""
                       className="w-full h-full object-cover rounded-xl border border-purple-100"
                     />
-
                     <button
                       type="button"
                       onClick={() => removeImage(idx)}
@@ -375,29 +280,18 @@ export default function ServiceForm({ open, onClose, service }) {
               </div>
             )}
 
-            {/* Upload */}
             {images.length < 4 && (
               <button
                 type="button"
-                onClick={() =>
-                  fileInputRef.current?.click()
-                }
+                onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
                 className="w-full border-2 border-dashed border-purple-200 hover:border-purple-400 bg-purple-50 hover:bg-purple-100 rounded-xl py-6 flex flex-col items-center gap-2 transition cursor-pointer disabled:opacity-60"
               >
-                <span className="text-2xl text-purple-500">
-                  <FaImage />
-                </span>
-
+                <span className="text-2xl text-purple-500"><FaImage /></span>
                 <p className="text-sm font-medium text-purple-500">
-                  {uploading
-                    ? "Uploading..."
-                    : "Click to upload images"}
+                  {uploading ? "Uploading..." : "Click to upload images"}
                 </p>
-
-                <p className="text-xs text-purple-300">
-                  PNG, JPG, WEBP — max 4 images
-                </p>
+                <p className="text-xs text-purple-300">PNG, JPG, WEBP — max 4 images</p>
               </button>
             )}
 
@@ -411,18 +305,13 @@ export default function ServiceForm({ open, onClose, service }) {
             />
 
             {imgError && (
-              <p className="text-red-500 text-xs mt-1">
-                {imgError}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{imgError}</p>
             )}
           </div>
 
           {/* Notice */}
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-            <span className="text-amber-500 mt-0.5">
-             <IoIosWarning />
-            </span>
-
+            <span className="text-amber-500 mt-0.5"><IoIosWarning /></span>
             <p className="text-xs text-amber-700 leading-relaxed">
               {isEdit
                 ? "Editing resets the service to pending."
@@ -432,7 +321,6 @@ export default function ServiceForm({ open, onClose, service }) {
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-1">
-
             <button
               type="button"
               onClick={onClose}
@@ -440,20 +328,15 @@ export default function ServiceForm({ open, onClose, service }) {
             >
               Cancel
             </button>
-
             <button
               type="submit"
               disabled={isPending || uploading}
               className="px-7 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition disabled:opacity-60 cursor-pointer"
             >
-              {isPending
-                ? "Saving..."
-                : isEdit
-                ? "Update Service"
-                : "Create Service"}
+              {isPending ? "Saving..." : isEdit ? "Update Service" : "Create Service"}
             </button>
-
           </div>
+
         </form>
       </div>
     </div>

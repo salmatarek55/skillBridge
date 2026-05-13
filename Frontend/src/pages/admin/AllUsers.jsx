@@ -38,11 +38,11 @@ export default function AllUsers() {
       return res.data.data;
     },
   });
-
+/////////////////////////////////
   useEffect(() => {
     if (isError) toast.error("Failed to load users");
   }, [isError]);
-
+/////////////////////////////////
   if (isLoading) {
     return (
       <div className="text-center py-20 text-slate-500">
@@ -50,22 +50,19 @@ export default function AllUsers() {
       </div>
     );
   }
-
+/////////////////////////////////
   const filtered = users.filter((u) => {
     const q = search.toLowerCase();
     const name = (u.fullName || u.name || "").toLowerCase();
     const email = (u.email || "").toLowerCase();
-
     const matchSearch =
       !q || name.includes(q) || email.includes(q);
-
     const matchRole =
       role === "All" ||
       (u.role || "").toLowerCase() === role.toLowerCase();
-
     return matchSearch && matchRole;
   });
-
+////////////////////////////////////////
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-purple-100 p-6 sm:p-8">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaHome } from "react-icons/fa";
 
 export default function Notfound() {
   const navigate = useNavigate();
@@ -30,11 +31,10 @@ export default function Notfound() {
             to="/"
             className="group flex items-center gap-2 px-10 py-4 bg-[oklch(51.1%_0.262_276.966)] hover:bg-[oklch(45.7%_0.24_277.023)] text-white font-black rounded-2xl transition-all shadow-xl shadow-indigo-500/20 w-full sm:w-auto"
           >
-            <span>🏠</span>
+            <FaHome />
             Back to Home Page
           </Link>
 
-          {/* Button: Go Back (Navigate -1) */}
           <button
             onClick={() => navigate(-1)}
             className="px-10 py-4 bg-white/50 backdrop-blur-md border border-[oklch(86.9%_0.022_252.894)] text-[oklch(27.9%_0.041_260.031)] font-bold rounded-2xl hover:bg-white/80 transition-all w-full sm:w-auto"
