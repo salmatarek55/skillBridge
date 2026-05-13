@@ -1,6 +1,6 @@
 
 import api from "../services/axiosInstance";
-GET /api/Messages/conversation/{requestId}
+
 export async function fetchMessages(requestId) {
   const res = await api.get(`/Messages/conversation/${requestId}`);
   return res.data.data;

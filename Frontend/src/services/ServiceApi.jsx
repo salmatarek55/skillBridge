@@ -1,6 +1,14 @@
 import api from "./axiosInstance";
-
+const fixImageUrl = (url) => {
+  if (!url) return "";
+  return url.replace(
+    "http://localhost:5242",
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5242"
+  );
+};
+/////////////////////////////////////////
 const normalizeService = (s) => {
+  const rawImage = s.thumbnailUrl || s.portfolioImageUrls?.[0] || "";
   return {
     serviceId: s.id,
     title: s.title || "",
@@ -14,11 +22,8 @@ const normalizeService = (s) => {
       id: s.providerId,
       name: s.providerName,
     },
-    images: s.portfolioImageUrls || [],
-    thumbnailUrl:
-      s.thumbnailUrl ||
-      s.portfolioImageUrls?.[0] ||
-      "",
+    images: (s.portfolioImageUrls || []).map(fixImageUrl),
+    thumbnailUrl: fixImageUrl(rawImage),
     status: s.status?.toLowerCase() || "pending",
     createdAt: s.createdAt,
   };

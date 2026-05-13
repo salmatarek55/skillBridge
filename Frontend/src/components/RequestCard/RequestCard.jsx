@@ -32,9 +32,8 @@ export default function RequestCard({ request, service, onCancel }) {
       <div className="flex gap-4 items-start">
         {/* Image */}
         <div className="flex-shrink-0">
-          {(service.thumbnailUrl || service.images?.[0]) ? (
-                    <img
-                      src={service.thumbnailUrl || service.images?.[0]}
+          {(service.thumbnailUrl || service.images?.[0] || service.image) ? (
+              <img src={service.thumbnailUrl || service.images?.[0] || service.image}
                       className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
                       alt={service.title}
                     />
