@@ -76,7 +76,7 @@ export default function Navbar() {
   ////////////////////////////////////////////////////////
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky py-2 top-0 z-50 transition-all duration-300 ${
         scrolled
           ? "bg-white/5 backdrop-blur-xl shadow-md border-b border-gray-200 shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
           : "bg-transparent border-b border-white/10 backdrop-blur-sm"

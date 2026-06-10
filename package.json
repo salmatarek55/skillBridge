@@ -3,6 +3,8 @@
     "@microsoft/signalr": "^10.0.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
     "vite": "^8.0.16"
   }
 }
