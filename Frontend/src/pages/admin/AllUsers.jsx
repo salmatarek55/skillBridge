@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import * as adminService from "../../services/adminApi";
+import * as adminService from "../../services/AdminApi";
 import { FiSearch, FiUsers } from "react-icons/fi";
 import { HiOutlineUser, HiOutlineBriefcase } from "react-icons/hi2";
 
@@ -38,35 +38,30 @@ export default function AllUsers() {
       return res.data.data;
     },
   });
-/////////////////////////////////
+  /////////////////////////////////
   useEffect(() => {
     if (isError) toast.error("Failed to load users");
   }, [isError]);
-/////////////////////////////////
+  /////////////////////////////////
   if (isLoading) {
     return (
-      <div className="text-center py-20 text-slate-500">
-        Loading Users...
-      </div>
+      <div className="text-center py-20 text-slate-500">Loading Users...</div>
     );
   }
-/////////////////////////////////
+  /////////////////////////////////
   const filtered = users.filter((u) => {
     const q = search.toLowerCase();
     const name = (u.fullName || u.name || "").toLowerCase();
     const email = (u.email || "").toLowerCase();
-    const matchSearch =
-      !q || name.includes(q) || email.includes(q);
+    const matchSearch = !q || name.includes(q) || email.includes(q);
     const matchRole =
-      role === "All" ||
-      (u.role || "").toLowerCase() === role.toLowerCase();
+      role === "All" || (u.role || "").toLowerCase() === role.toLowerCase();
     return matchSearch && matchRole;
   });
-////////////////////////////////////////
+  ////////////////////////////////////////
   return (
     <div className="max-w-4xl py-10 mx-auto">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-purple-100 p-6 sm:p-8">
-
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -135,12 +130,12 @@ export default function AllUsers() {
         ) : (
           <div className="flex flex-col divide-y divide-purple-50">
             {filtered.map((u, idx) => {
-              const name = u.fullName || u.name || (u.email?.split("@")[0]) || "User";
+              const name =
+                u.fullName || u.name || u.email?.split("@")[0] || "User";
 
               const uRole = (u.role || "client").toLowerCase();
 
-              const avatarColor =
-                AVATAR_COLORS[idx % AVATAR_COLORS.length];
+              const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
 
               return (
                 <div
@@ -160,9 +155,7 @@ export default function AllUsers() {
                       {name}
                     </p>
 
-                    <p className="text-xs text-gray-500 truncate">
-                      {u.email}
-                    </p>
+                    <p className="text-xs text-gray-500 truncate">{u.email}</p>
                   </div>
 
                   {/* Role Badge */}

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import * as adminService from "../../services/adminApi";
+import * as adminService from "../../services/AdminApi";
 
 import {
   FiUser,
@@ -53,11 +53,11 @@ export default function AdminDashboard() {
       return res.data.data;
     },
   });
-////////////////////////////////////
+  ////////////////////////////////////
   useEffect(() => {
     if (isError) toast.error("Failed to load stats");
   }, [isError]);
-//////////////////////////////////////
+  //////////////////////////////////////
   const counts = data || {
     pendingProviders: 0,
     pendingServices: 0,
@@ -66,7 +66,6 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-4xl py-10 mx-auto">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8">
-
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -87,7 +86,6 @@ export default function AdminDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-
           <Link
             to="/admin/pending-providers"
             className="group flex items-center gap-4 bg-indigo-50 border border-indigo-100 rounded-xl p-5 hover:shadow-md hover:border-indigo-300 transition-all duration-200"
@@ -133,7 +131,6 @@ export default function AdminDashboard() {
               <FiArrowRight />
             </span>
           </Link>
-
         </div>
 
         {/* Divider */}
@@ -151,21 +148,14 @@ export default function AdminDashboard() {
               to={q.to}
               className={`group flex flex-col gap-2 ${q.bg} border ${q.border} rounded-xl p-5 hover:shadow-md transition-all duration-200`}
             >
-              <span className="text-2xl text-purple-600">
-                {q.icon}
-              </span>
+              <span className="text-2xl text-purple-600">{q.icon}</span>
 
-              <p className={`font-semibold text-sm ${q.text}`}>
-                {q.label}
-              </p>
+              <p className={`font-semibold text-sm ${q.text}`}>{q.label}</p>
 
-              <p className={`text-xs ${q.sub} leading-relaxed`}>
-                {q.desc}
-              </p>
+              <p className={`text-xs ${q.sub} leading-relaxed`}>{q.desc}</p>
             </Link>
           ))}
         </div>
-
       </div>
     </div>
   );

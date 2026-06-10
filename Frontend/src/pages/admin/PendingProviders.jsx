@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import * as adminService from "../../services/adminApi";
+import * as adminService from "../../services/AdminApi";
 import { HiOutlineCheckCircle } from "react-icons/hi2";
 import { HiOutlineCheck, HiOutlineXMark } from "react-icons/hi2";
 
@@ -30,11 +30,11 @@ export default function PendingProviders() {
       return res.data.data;
     },
   });
-/////////////////////////////////////////////
+  /////////////////////////////////////////////
   useEffect(() => {
     if (isError) toast.error("Failed to load pending providers");
   }, [isError]);
-/////////////////////////////////////////////
+  /////////////////////////////////////////////
   const { mutate: reviewProvider, isPending: busy } = useMutation({
     mutationFn: ({ id, approve, note }) =>
       adminService.reviewProvider(id, approve, note),
@@ -47,7 +47,7 @@ export default function PendingProviders() {
     },
     onError: () => toast.error("Action failed, please try again"),
   });
-/////////////////////////////////////////////
+  /////////////////////////////////////////////
   return (
     <div className="max-w-4xl py-10 mx-auto">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-purple-100 p-6 sm:p-8">
