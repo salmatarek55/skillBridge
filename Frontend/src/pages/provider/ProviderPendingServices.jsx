@@ -25,7 +25,7 @@ export default function ProviderPendingServices() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto py-10">
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8">
 
         <div className="flex items-center justify-between mb-8">

@@ -20,7 +20,7 @@ export default function Home() {
   const featured = services.slice(0, 4);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="max-w-7xl  mx-auto px-4 sm:px-6">
 
       {/* ── Hero ── */}
       <section className="text-center py-5 sm:py-20">

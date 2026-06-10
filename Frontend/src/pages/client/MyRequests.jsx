@@ -127,8 +127,8 @@ export default function MyRequests() {
       ? requests.filter((r) => r.status !== "cancelled")
       : requests.filter((r) => r.status === activeTab);
 
-  return (
-    <div className="max-w-4xl mx-auto px-4">
+      return (
+    <div className="max-w-4xl py-10 mx-auto px-4">
       {/* Header */}
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-indigo-100 p-6 sm:p-8 mb-6">
         <div className="flex items-center justify-between mb-6">

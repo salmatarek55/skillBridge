@@ -123,7 +123,7 @@ export default function ServiceForm({ open, onClose, service }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-indigo-900/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed  inset-0 bg-indigo-900/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(99,102,241,0.18)] border border-indigo-100 w-full max-w-lg max-h-[90vh] overflow-y-auto">
 
         {/* Header */}

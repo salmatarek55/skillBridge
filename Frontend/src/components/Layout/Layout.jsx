@@ -14,7 +14,7 @@ export default function Layout() {
         <div className="absolute top-1/2 -right-40 w-[450px] h-[450px] bg-purple-200/30 blur-3xl rounded-full" />
       </div>
 
-      <main className="py-15  px-4">
+      <main className="px-4">
         <Outlet />
       </main>
 

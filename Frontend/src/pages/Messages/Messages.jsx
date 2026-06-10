@@ -88,7 +88,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4">
+    <div className="max-w-5xl mx-auto px-4 py-10">
       <div
         className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(99,102,241,0.10)] border border-purple-100 overflow-hidden"
         style={{ height: "calc(100vh - 140px)", minHeight: "500px" }}
