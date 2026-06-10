@@ -135,10 +135,7 @@ export default function AllUsers() {
         ) : (
           <div className="flex flex-col divide-y divide-purple-50">
             {filtered.map((u, idx) => {
-              const name =
-                u.fullName ||
-                u.name ||
-                u.email.split("@")[0];
+              const name = u.fullName || u.name || (u.email?.split("@")[0]) || "User";
 
               const uRole = (u.role || "client").toLowerCase();
 

@@ -79,9 +79,9 @@ const routes = createBrowserRouter([
   },
 ]);
 
-
-export default function App() {
 const queryClient = new QueryClient();
+export default function App() {
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
