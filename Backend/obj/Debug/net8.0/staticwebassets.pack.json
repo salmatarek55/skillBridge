@@ -1,6 +1,46 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\13378539-ab80-4021-97b9-b1345be48a09.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\services\\13378539-ab80-4021-97b9-b1345be48a09.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\246d3c7d-6a19-4fa1-985c-0feb47872d8c.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\246d3c7d-6a19-4fa1-985c-0feb47872d8c.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\27c22923-96e9-478d-bcbd-09629f5d5f6b.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\services\\27c22923-96e9-478d-bcbd-09629f5d5f6b.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\54fee996-7a4f-4aa8-83d8-3fae92b3cac5.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\54fee996-7a4f-4aa8-83d8-3fae92b3cac5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\7bd47992-5fc4-4832-aa14-cbda6261889e.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\7bd47992-5fc4-4832-aa14-cbda6261889e.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\7ccf5d4b-ba1e-4e2d-ba09-a87cad5cdb3d.webp",
+      "PackagePath": "staticwebassets\\uploads\\services\\7ccf5d4b-ba1e-4e2d-ba09-a87cad5cdb3d.webp"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\826f4b2c-fec4-4976-898b-e789c55e30f4.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\826f4b2c-fec4-4976-898b-e789c55e30f4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\882d824e-e0bf-4fe4-8ac6-c09dd6b4f5f2.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\882d824e-e0bf-4fe4-8ac6-c09dd6b4f5f2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\994df071-8d32-4ca4-a2c8-5d7b071a0b28.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\994df071-8d32-4ca4-a2c8-5d7b071a0b28.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\9ad0e3c7-7af3-4f46-984a-c16e4f9bc73c.webp",
+      "PackagePath": "staticwebassets\\uploads\\services\\9ad0e3c7-7af3-4f46-984a-c16e4f9bc73c.webp"
+    },
+    {
       "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\a0ebaa93-7cb9-488e-a84a-5b69809ff410.jpg",
       "PackagePath": "staticwebassets\\uploads\\services\\a0ebaa93-7cb9-488e-a84a-5b69809ff410.jpg"
     },
@@ -13,8 +53,16 @@
       "PackagePath": "staticwebassets\\uploads\\services\\a9449820-96b6-408c-bf3d-0c9776f1b398.jpeg"
     },
     {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\aa06223b-762f-4202-b493-ac949c238d65.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\aa06223b-762f-4202-b493-ac949c238d65.jpg"
+    },
+    {
       "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\b0e61cc4-51a5-49bd-b17c-f5503d9aab65.jpg",
       "PackagePath": "staticwebassets\\uploads\\services\\b0e61cc4-51a5-49bd-b17c-f5503d9aab65.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\bb207249-5574-4594-beb4-a1a07348e995.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\services\\bb207249-5574-4594-beb4-a1a07348e995.jpeg"
     },
     {
       "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\c222aabe-1ed0-468a-886f-a008ef69d07d.jpg",
@@ -25,8 +73,16 @@
       "PackagePath": "staticwebassets\\uploads\\services\\c52c536d-bc26-4fe4-8444-08fdc2199cab.jpg"
     },
     {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\c93448fe-95cc-499a-a1c9-bcc9c4e30438.jpg",
+      "PackagePath": "staticwebassets\\uploads\\services\\c93448fe-95cc-499a-a1c9-bcc9c4e30438.jpg"
+    },
+    {
       "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\d4283976-e96a-49a6-8a0e-49fe0f61bf82.jpg",
       "PackagePath": "staticwebassets\\uploads\\services\\d4283976-e96a-49a6-8a0e-49fe0f61bf82.jpg"
+    },
+    {
+      "Id": "C:\\Users\\salma\\Desktop\\skillBridge\\skillBridge\\Backend\\wwwroot\\uploads\\services\\e72af491-565d-4b43-934c-04a3acf55c88.webp",
+      "PackagePath": "staticwebassets\\uploads\\services\\e72af491-565d-4b43-934c-04a3acf55c88.webp"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.SkillBridge.Microsoft.AspNetCore.StaticWebAssets.props",
